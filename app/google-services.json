@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "110072979787",
+    "firebase_url": "https://samarcanda-f80f3.firebaseio.com",
+    "project_id": "samarcanda-f80f3",
+    "storage_bucket": "samarcanda-f80f3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:110072979787:android:d30988d904040aea",
+        "android_client_info": {
+          "package_name": "com.jorgebascones.samarcanda"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "110072979787-eobn74noq80msq94qob41npqgb00imvn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.jorgebascones.samarcanda",
+            "certificate_hash": "94bc4f7b3f631f4666d92be90d74ae4bf8d1e0a0"
+          }
+        },
+        {
+          "client_id": "110072979787-7ibm0eq71vp1j2ob24pbf4dj26eqa4ra.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDOs1A6vu2uEkJZigllN8AlGC8Tyy9sSpw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "110072979787-7ibm0eq71vp1j2ob24pbf4dj26eqa4ra.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

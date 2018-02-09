@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:layout_marginBottom="24dp"
+    android:layout_marginLeft="20dp"
+    android:layout_marginRight="20dp"
+    android:layout_marginTop="32dp">
+
+    <FrameLayout
+        android:id="@+id/background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="6dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:background="@drawable/shape2"
+            android:gravity="center_horizontal"
+            android:orientation="vertical" >
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="12dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:background="@drawable/shape1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical" />
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/cardBase"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="18dp"
+        android:background="@drawable/shape"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <FrameLayout
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+
+            <ImageView
+                android:id="@+id/id_card_foto"
+                android:layout_width="160dp"
+                android:layout_height="160dp"
+                android:padding="4dp"
+                android:scaleType="centerCrop" />
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="top|center_horizontal"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/id_card_botonCambio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Button"
+                android:theme="@style/ThemeOverlay.MyDarkButton" />
+
+            <TextView
+                android:id="@+id/nombreText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:padding="4dp"
+                android:textColor="#111"
+                android:textSize="24sp"
+                tools:text="Nombre" />
+
+            <TextView
+                android:id="@+id/id_nombre_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:padding="4dp"
+                android:textColor="#787878"
+                android:textSize="16sp"
+                tools:text="Nombre del user" />
+
+            <TextView
+                android:id="@+id/segundoCampo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:padding="4dp"
+                android:textColor="@android:color/black"
+                android:textSize="24sp"
+                tools:text="Otro campo" />
+
+            <TextView
+                android:id="@+id/id_segundoCampo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:padding="4dp"
+                android:textColor="#787878"
+                android:textSize="16sp"
+                tools:text="Otro campo" />
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+
+
+
+
+
+
+</FrameLayout>
