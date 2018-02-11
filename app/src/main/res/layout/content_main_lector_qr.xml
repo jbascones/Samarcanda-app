@@ -30,23 +30,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
-        android:onClick="leerArticuloManual"
+        android:onClick="leerQR"
         android:theme="@style/ThemeOverlay.MyDarkButton"
         android:text="Añadir artículo"
         android:layout_below="@+id/cliente_element"
         android:layout_centerHorizontal="true" />
 
 
-
     <com.dd.morphingbutton.MorphingButton
         android:id="@+id/id_leer_cliente"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/mb_white"
-        android:layout_above="@+id/button_finish"
-        android:layout_toLeftOf="@+id/id_leer_producto"
-        android:layout_toStartOf="@+id/id_leer_producto"
-        android:layout_marginBottom="23dp" />
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/articulo_element"
+        android:layout_marginTop="70dp"
+        android:onClick="success"
+        android:textColor="@color/bgGradientStart" />
 
     <Button
         android:id="@+id/button_finish"
@@ -94,6 +93,19 @@
         android:layout_marginBottom="26dp"
         android:layout_alignLeft="@+id/id_button_leer_articulo"
         android:layout_alignStart="@+id/id_button_leer_articulo" />
+
+    <Button
+        android:id="@+id/id_bn_terminar_venta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Terminar"
+        android:onClick="subirVenta"
+        android:theme="@style/ThemeOverlay.MyDarkButton"
+        android:layout_below="@+id/id_leer_cliente"
+        android:layout_alignLeft="@+id/button_finish"
+        android:layout_alignStart="@+id/button_finish"
+        android:layout_marginTop="32dp"
+        android:layout_centerHorizontal="true"/>
 
 
 </android.widget.RelativeLayout>

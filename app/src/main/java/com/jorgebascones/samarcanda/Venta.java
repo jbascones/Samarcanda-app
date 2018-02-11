@@ -10,7 +10,9 @@ public class Venta {
     public User user;
     public Articulo articulo;
     public String fecha;
-    public boolean confirmada;
+    public String clienteId;
+    public String articuloId;
+
 
 
     public User getUser() {
@@ -38,14 +40,6 @@ public class Venta {
         this.userId = userId;
     }
 
-    public boolean isConfirmada() {
-        return confirmada;
-    }
-
-    public void setConfirmada(boolean confirmada) {
-        this.confirmada = confirmada;
-    }
-
     public String getFecha() {
         return fecha;
     }
@@ -54,7 +48,19 @@ public class Venta {
         this.fecha = fecha;
     }
 
+    public String getClienteId() {
+        return clienteId;
+    }
 
+    public void setClienteId(String clienteId) {
+        this.clienteId = clienteId;
+    }
 
+    public String getArticuloId() {
+        return articuloId;
+    }
 
+    public void setArticuloId(String articuloId) {
+        this.articuloId = articuloId;
+    }
 }

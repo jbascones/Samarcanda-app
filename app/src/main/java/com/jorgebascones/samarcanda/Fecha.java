@@ -38,7 +38,7 @@ public class Fecha {
 
         String anno = getAnno(fecha);
 
-        String ruta = mes + "/" + anno;
+        String ruta = anno + "/" + mes;
 
         return ruta;
     }

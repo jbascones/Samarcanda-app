@@ -21,7 +21,9 @@
     <dimen name="mb_width_100">100dp</dimen>
     <dimen name="mb_width_120">120dp</dimen>
     <dimen name="mb_width_200">200dp</dimen>
-    <dimen name="mb_height_56">56dp</dimen>
+    <dimen name="mb_altura_circulo">90dp</dimen>
+    <dimen name="mb_altura_boton">40dp</dimen>
+    <dimen name="mb_ancho_boton">70dp</dimen>
     <dimen name="mb_height_8">8dp</dimen>
     <dimen name="mb_height_4">4dp</dimen>
 

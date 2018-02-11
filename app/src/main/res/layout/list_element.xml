@@ -32,10 +32,11 @@
         android:layout_alignStart="@id/id_element_id"
         android:layout_below="@id/id_element_id"
         android:layout_marginTop="5dp"
-        android:layout_toEndOf="@id/id_element_icon"
         android:layout_toRightOf="@id/id_element_icon"
         android:text="Primera linea"
-        android:textAppearance="@android:style/TextAppearance.Holo" />
+        android:textAppearance="@android:style/TextAppearance.Holo"
+        android:layout_toLeftOf="@+id/id_cancelar_cliente"
+        android:layout_toStartOf="@+id/id_cancelar_cliente" />
 
     <TextView
         android:id="@+id/firstLineDate"
@@ -46,5 +47,16 @@
         android:layout_alignTop="@id/id_element_id"
         android:text="07 mar 2017"
         android:textColor="@color/bgGradientStart" />
+
+    <Button
+        android:id="@+id/id_cancelar_cliente"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/firstLineDate"
+        android:background="@color/mb_red"
+        android:onClick="cancelarCliente"
+        android:text="Cancelar" />
 
 </RelativeLayout>

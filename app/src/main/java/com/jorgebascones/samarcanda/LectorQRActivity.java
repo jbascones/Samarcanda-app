@@ -41,6 +41,8 @@ public class LectorQRActivity extends AppCompatActivity implements ZXingScannerV
     DatabaseReference myRef = database.getReference();
     final String TAG = "venta";
     public Venta venta;
+    public MorphingButton btnMorph;
+    public boolean ventaCofirmada;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,15 +58,20 @@ public class LectorQRActivity extends AppCompatActivity implements ZXingScannerV
 
         gestionElements();
 
-        //Codigo morphing button
-        final MorphingButton btnMorph = (MorphingButton) findViewById(R.id.id_leer_cliente);
+        ventaCofirmada = false;
+        Button buttonTerminar = (Button) findViewById(R.id.id_bn_terminar_venta);
+        buttonTerminar.setVisibility(View.INVISIBLE);
 
-        btnMorph.setOnClickListener(new View.OnClickListener() {
+        //Codigo morphing button
+        gestionMorph();
+
+
+        /*btnMorph.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 morphToSuccess(btnMorph);
             }
-        });
+        }); */
 
 
 
@@ -109,6 +116,16 @@ public class LectorQRActivity extends AppCompatActivity implements ZXingScannerV
         bajarArticulo("/camisetas/0123456789");
     }
 
+    public void cancelarArticulo(View v){
+        venta.setArticulo(null);
+        gestionElements();
+    }
+
+    public void cancelarCliente(View v){
+        venta.setUser(null);
+        gestionElements();
+    }
+
     public void sacarCamara(){
         //Se crea el objeto de la libreria para leer codifos QR
         zXingScannerView = new ZXingScannerView(getApplicationContext());
@@ -141,12 +158,15 @@ public class LectorQRActivity extends AppCompatActivity implements ZXingScannerV
         gestionElements();
     }
 
-    public void subirVenta (String user){
-        if (venta.isConfirmada()){
+    public void subirVenta (View v){
+        if (ventaCofirmada){
             Log.d("venta","Subiendo venta");
-            Date fecha = new Date();
-            fecha.getTime();
-            myRef.child("/ventas/").push().setValue(venta);
+            Fecha fechaVenta = new Fecha();
+            venta.setFecha(fechaVenta.getFecha());
+            prepararObjetoVenta();
+            myRef.child("/ventas/"+fechaVenta.getRutaVenta()).push().setValue(venta);
+            Toast.makeText(getApplicationContext(),"Venta confirmada",Toast.LENGTH_SHORT).show();
+            finish();
         }else{
 
         }
@@ -157,22 +177,29 @@ public class LectorQRActivity extends AppCompatActivity implements ZXingScannerV
                 .duration(duration)
                 .cornerRadius(dimen(R.dimen.mb_corner_radius_2))
                 .width(dimen(R.dimen.mb_width_200))
-                .height(dimen(R.dimen.mb_height_56))
-                .color(color(R.color.mb_green))
-                .colorPressed(color(R.color.mb_blue_dark))
-                .text("Niquelao");
+                .height(dimen(R.dimen.mb_altura_boton))
+                .color(color(R.color.colorAccent))
+                .colorPressed(color(R.color.colorAccent))
+                .text("Confirmar venta");
         btnMorph.morph(square);
+    }
+
+    public void success (View v){
+        ventaCofirmada= true;
+        morphToSuccess(btnMorph);
+        Button buttonTerminar = (Button) findViewById(R.id.id_bn_terminar_venta);
+        buttonTerminar.setVisibility(View.VISIBLE);
     }
 
     private void morphToSuccess(final MorphingButton btnMorph) {
         MorphingButton.Params circle = MorphingButton.Params.create()
                 .duration(integer(R.integer.mb_animation))
-                .cornerRadius(dimen(R.dimen.mb_height_56))
-                .width(dimen(R.dimen.mb_height_56))
-                .height(dimen(R.dimen.mb_height_56))
+                .cornerRadius(dimen(R.dimen.mb_altura_circulo))
+                .width(dimen(R.dimen.mb_altura_circulo))
+                .height(dimen(R.dimen.mb_altura_circulo))
                 .color(color(R.color.mb_green))
                 .colorPressed(color(R.color.mb_green_dark))
-                .icon(R.drawable.ic_menu_camera);
+                .icon(R.drawable.ic_venta_confirmada_96);
         btnMorph.morph(circle);
     }
 
@@ -181,6 +208,8 @@ public class LectorQRActivity extends AppCompatActivity implements ZXingScannerV
         if(venta.getUser()==null){
             View clienteElement = findViewById(R.id.cliente_element);
             clienteElement.setVisibility(View.INVISIBLE);
+            Button botonLeer = (Button) findViewById(R.id.id_button_leer_cliente);
+            botonLeer.setVisibility(View.VISIBLE);
         }else{
             TextView id = (TextView) findViewById(R.id.id_element_id);
             id.setText("Cliente");
@@ -195,6 +224,8 @@ public class LectorQRActivity extends AppCompatActivity implements ZXingScannerV
         if(venta.getArticulo()==null){
             View clienteElement = findViewById(R.id.articulo_element);
             clienteElement.setVisibility(View.INVISIBLE);
+            Button botonLeer = (Button) findViewById(R.id.id_button_leer_articulo);
+            botonLeer.setVisibility(View.VISIBLE);
         }else{
             View clienteElement = findViewById(R.id.articulo_element);
             clienteElement.setVisibility(View.VISIBLE);
@@ -208,6 +239,7 @@ public class LectorQRActivity extends AppCompatActivity implements ZXingScannerV
             Button botonLeer = (Button) findViewById(R.id.id_button_leer_articulo);
             botonLeer.setVisibility(View.INVISIBLE);
         }
+        gestionMorph();
     }
 
     public int dimen(int resId) {
@@ -302,6 +334,31 @@ public class LectorQRActivity extends AppCompatActivity implements ZXingScannerV
                 Log.w(TAG, "Fallo al leer artículo", error.toException());
             }
         });
+    }
+
+    public void gestionMorph(){
+        btnMorph = (MorphingButton) findViewById(R.id.id_leer_cliente);
+        Button buttonTerminar = (Button) findViewById(R.id.id_bn_terminar_venta);
+        buttonTerminar.setVisibility(View.INVISIBLE);
+
+
+        if(venta.getArticulo()==null || venta.getUser()==null){
+            btnMorph.setVisibility(View.INVISIBLE);
+
+        }else{
+            morphToSquare(btnMorph,1);
+
+        }
+    }
+
+    //Necesario para que el objeto que se suba tenga una referencia al clinte y al articulo
+    //de manera que no se almacenan duplicados de estos objetos
+    public void prepararObjetoVenta(){
+        venta.setArticuloId(venta.getArticulo().getArticuloId());
+        venta.setArticulo(null);
+
+        venta.setClienteId(venta.getUser().getUsuarioId());
+        venta.setUser(null);
     }
 
 
