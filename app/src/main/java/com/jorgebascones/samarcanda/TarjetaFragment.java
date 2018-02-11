@@ -166,7 +166,7 @@ public class TarjetaFragment extends Fragment {
 
         ImageView imageView = (ImageView) view.findViewById(R.id.id_card_foto);
         CreaQr creaQr = new CreaQr();
-        Bitmap bitmap = creaQr.generarQR(miUserId);
+        Bitmap bitmap = creaQr.generarQR("USER:"+miUserId);
         imageView.setImageBitmap(bitmap);
 
         estado = "qr";

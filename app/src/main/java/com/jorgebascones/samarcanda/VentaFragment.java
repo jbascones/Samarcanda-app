@@ -23,7 +23,7 @@ import com.google.firebase.database.FirebaseDatabase;
  * A simple {@link Fragment} subclass.
  */
 
-public class PublicarFragment extends Fragment {
+public class VentaFragment extends Fragment {
 
 
     FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -35,14 +35,12 @@ public class PublicarFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
-        final View view = inflater.inflate(R.layout.fragment_inbox, container, false);
+        final View view = inflater.inflate(R.layout.fragment_venta, container, false);
 
-        ((MainActivity) getActivity()).getSupportActionBar().setTitle("Publicar");
+        ((MainActivity) getActivity()).getSupportActionBar().setTitle("Realizar Venta");
 
-        Button buttonChangeText = (Button) view.findViewById(R.id.id_botonPublicarInbox);
+        Button buttonChangeText = (Button) view.findViewById(R.id.id_botonVenta);
 
-        final TextView textViewInboxFragment = (TextView) view.findViewById(R.id.id_txtPublicarInbox);
-        final EditText editTextInbox = (EditText) view.findViewById(R.id.id_txtEscritoInbox);
 
         buttonChangeText.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,5 +65,7 @@ public class PublicarFragment extends Fragment {
 
         return view;
     }
+
+
 
 }

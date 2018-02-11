@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity
 
     int counter;
 
-
+    String fragmenActual;
 
 
     @Override
@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity
 
         descargarPerfil();
 
-
+        fragmenActual = "inicial";
 
 
 
@@ -192,20 +192,24 @@ public class MainActivity extends AppCompatActivity
 
             loading.setVisibility(View.INVISIBLE);
 
+            fragmenActual = "comentarios";
 
-        } else if (id == R.id.publicar_drawer) {
+
+        } else if (id == R.id.venta_drawer) {
 
 
-            PublicarFragment publicarFragment = new PublicarFragment();
+            VentaFragment ventaFragment = new VentaFragment();
 
             FragmentManager manager = getSupportFragmentManager();
 
             manager.beginTransaction().replace(R.id.main_fragmento,
-                    publicarFragment,
-                    publicarFragment.getTag()
+                    ventaFragment,
+                    ventaFragment.getTag()
             ).commit();
 
             loading.setVisibility(View.INVISIBLE);
+
+            fragmenActual = "venta";
 
         } else if (id == R.id.tarjeta_drawer) {
 
@@ -220,10 +224,12 @@ public class MainActivity extends AppCompatActivity
 
             loading.setVisibility(View.INVISIBLE);
 
+            fragmenActual = "tarjeta";
+
 
         } /*else if (id == R.id.nav_share) {
 
-            PublicarFragment publicarFragment = new PublicarFragment();
+            VentaFragment publicarFragment = new VentaFragment();
 
             FragmentManager manager = getSupportFragmentManager();
 
@@ -247,11 +253,14 @@ public class MainActivity extends AppCompatActivity
 
             loading.setVisibility(View.INVISIBLE);
 
+            fragmenActual = "subir post";
+
 
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+        gestionFab();
         return true;
     }
 
@@ -439,7 +448,11 @@ public class MainActivity extends AppCompatActivity
 
             }
         });
-
+        if (fragmenActual.equals("comentarios")){
+            fab.setVisibility(View.VISIBLE);
+        }else {
+            fab.setVisibility(View.INVISIBLE);
+        }
 
         }
 

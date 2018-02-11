@@ -24,7 +24,7 @@
     <item android:title="Gestion">
         <menu>
             <item
-                android:id="@+id/publicar_drawer"
+                android:id="@+id/venta_drawer"
                 android:icon="@drawable/ic_menu_slideshow"
                 android:title="Realizar Venta" />
 

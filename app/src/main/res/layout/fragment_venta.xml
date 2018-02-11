@@ -1,0 +1,41 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.jorgebascones.samarcanda.VentaFragment">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/id_botonVenta"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:layout_marginBottom="80dp"
+            android:onClick="irVentas"
+            android:theme="@style/ThemeOverlay.MyDarkButton"
+            android:text="Comenzar venta"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true" />
+
+        <Button
+            android:id="@+id/id_botonVerVentas"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:onClick="verVentas"
+            android:text="Ver ventas"
+            android:theme="@style/ThemeOverlay.MyDarkButton"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="81dp"
+            android:layout_alignLeft="@+id/id_botonVenta"
+            android:layout_alignStart="@+id/id_botonVenta"
+            android:layout_alignRight="@+id/id_botonVenta"
+            android:layout_alignEnd="@+id/id_botonVenta" />
+
+    </RelativeLayout>
+
+</FrameLayout>
