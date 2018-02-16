@@ -30,4 +30,74 @@
     <integer name="mb_animation">999</integer>
 
     <string name="mb_button">Button</string>
+
+    <string-array name="red">
+        <item>#ba0303</item>
+        <item>#ff7878</item>
+        <item>#9e3535</item>
+        <item>#fd3939</item>
+    </string-array>
+
+    <string-array name="bubble">
+        <item>#5ABDED</item>
+        <item>#ffbd4e</item>
+        <item>#9ad7f4</item>
+        <item>#ffd389</item>
+    </string-array>
+
+    <string-array name="path">
+        <item>com.github.glomadrian.grav.generator.animation.PathAnimator</item>
+        <item>com.github.glomadrian.grav.generator.animation.BallSizeAnimator</item>
+    </string-array>
+
+    <string-array name="BubbleAnimations">
+        <item>com.github.glomadrian.grav.generator.animation.SideToSideAnimator</item>
+        <item>com.github.glomadrian.grav.generator.animation.ShakeAnimator</item>
+    </string-array>
+
+    <string name="circle">
+M527.023,71.8233 C780.213,71.8233,985.464,277.075,985.464,530.265
+C985.464,783.455,780.213,988.707,527.023,988.707
+C273.832,988.707,68.5809,783.455,68.5809,530.265
+C68.5809,277.075,273.832,71.8233,527.023,71.8233 Z
+  </string>
+
+    <integer name="circle_original_width">1062</integer>
+    <integer name="circle_original_height">1062</integer>
+
+    <string-array name="WallaIcon">
+        <item>com.github.glomadrian.grav.generator.animation.ShakeAnimator</item>
+        <item>com.github.glomadrian.grav.generator.animation.AlphaAnimator</item>
+    </string-array>
+
+    <integer-array name="walla_points_percent_points">
+        <item>10</item>
+        <item>60</item>
+
+        <item>8</item>
+        <item>30</item>
+
+        <item>25</item>
+        <item>10</item>
+
+        <item>45</item>
+        <item>90</item>
+
+        <item>51</item>
+        <item>15</item>
+
+        <item>70</item>
+        <item>6</item>
+
+        <item>75</item>
+        <item>70</item>
+
+        <item>80</item>
+        <item>45</item>
+
+        <item>95</item>
+        <item>30</item>
+    </integer-array>
+
 </resources>
+

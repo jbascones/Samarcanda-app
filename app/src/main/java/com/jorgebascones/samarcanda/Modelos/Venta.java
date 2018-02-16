@@ -1,4 +1,4 @@
-package com.jorgebascones.samarcanda;
+package com.jorgebascones.samarcanda.Modelos;
 
 /**
  * Created by jorgebascones on 10/2/18.
@@ -12,6 +12,7 @@ public class Venta {
     public String fecha;
     public String clienteId;
     public String articuloId;
+    public String ventaKey;
 
 
 
@@ -62,5 +63,13 @@ public class Venta {
 
     public void setArticuloId(String articuloId) {
         this.articuloId = articuloId;
+    }
+
+    public String getVentaKey() {
+        return ventaKey;
+    }
+
+    public void setVentaKey(String ventaKey) {
+        this.ventaKey = ventaKey;
     }
 }

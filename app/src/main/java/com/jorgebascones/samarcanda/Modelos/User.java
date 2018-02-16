@@ -1,4 +1,4 @@
-package com.jorgebascones.samarcanda;
+package com.jorgebascones.samarcanda.Modelos;
 
 import android.support.annotation.NonNull;
 import android.util.Log;

@@ -14,6 +14,24 @@
 
     </android.support.design.widget.AppBarLayout>
 
+    <com.github.glomadrian.grav.GravView
+        android:id="@+id/grav"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:regular_cell_size="400"
+        app:regular_variance="400"
+        app:pointGenerator="com.github.glomadrian.grav.generator.point.RegularPointGenerator"
+        app:gravGenerator="com.github.glomadrian.grav.generator.grav.BallGenerator"
+        app:ball_from_size="3dp"
+        app:ball_to_size="16dp"
+        app:colorGenerator="com.github.glomadrian.grav.generator.paint.ArrayColorGenerator"
+        app:array_colors="@array/bubble"
+        app:animationGenerator="com.github.glomadrian.grav.generator.animation.SideToSideAnimator"
+        app:side_to_side_min_duration="7000"
+        app:side_to_side_max_duration="14000"
+        app:side_to_side_direction="downToUp"
+        />
+
     <include
         layout="@layout/content_main_lector_qr">
 

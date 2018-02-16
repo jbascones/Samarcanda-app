@@ -1,4 +1,4 @@
-package com.jorgebascones.samarcanda;
+package com.jorgebascones.samarcanda.Modelos;
 
 /**
  * Created by jorgebascones on 10/2/18.

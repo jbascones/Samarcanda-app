@@ -63,8 +63,39 @@ public class VentaFragment extends Fragment {
             }
         });
 
+        Button buttonVerVentas = (Button) view.findViewById(R.id.id_botonVerVentas);
+
+
+        buttonVerVentas.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+               /* Log.d("Funciona","Boton activado");
+                textViewInboxFragment.setText(editTextInbox.getText());
+
+                Comentario newComentario = new Comentario(user.getUid(),editTextInbox.getText().toString(),user.getDisplayName(),user.getPhotoUrl().toString());
+
+                myRef.child("/mensajes/").push().setValue(newComentario);
+                //myRef.child("/mensajes/"+user.getUid()).setValue(editTextInbox.getText().toString());
+                Log.d("Funciona","Se publica en /mensajes/"+user.getUid()+" el texto: "+ editTextInbox.getText());*/
+
+                VerVentasFragment verVentasFragment = new VerVentasFragment();
+
+                FragmentManager manager = getFragmentManager();
+
+                manager.beginTransaction().replace(R.id.main_fragmento,
+                        verVentasFragment,
+                        verVentasFragment.getTag()
+                ).commit();
+
+
+            }
+        });
+
         return view;
     }
+
+
 
 
 

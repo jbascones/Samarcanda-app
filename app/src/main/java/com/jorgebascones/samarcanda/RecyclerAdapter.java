@@ -1,15 +1,10 @@
 package com.jorgebascones.samarcanda;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
-import android.text.Layout;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,11 +15,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.jorgebascones.samarcanda.Modelos.Comentario;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-
-import static java.security.AccessController.getContext;
 
 /**
  * Created by jorgebascones on 3/11/17.
@@ -32,13 +26,49 @@ import static java.security.AccessController.getContext;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {
 
+    //Listas de datos
     private ArrayList<Comentario> values;
-    RecyclerAdapter(ArrayList<Comentario> values) {
+
+
+    //Constructor
+    public RecyclerAdapter(ArrayList<Comentario> values) {
         this.values = values;
     }
 
+    //Objetos de la base de datos Firebase
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myRef = database.getReference();
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
+
+        public ImageView itemImage;
+        public TextView itemTitle;
+        public TextView itemDetail;
+        public View fondo;
+        //Construcor
+        public ViewHolder(View itemView) {
+            super(itemView);
+            fondo =  itemView.findViewById(R.id.card_view);
+            itemImage = (ImageView)itemView.findViewById(R.id.item_image);
+            itemTitle = (TextView)itemView.findViewById(R.id.item_title);
+            itemDetail = (TextView)itemView.findViewById(R.id.item_detail);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override public void onClick(View v) {
+                    int position = getAdapterPosition();
+
+                    Snackbar.make(v, "Click detected on item " + position,
+                            Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                    if(soyAdmin()) {
+                        dialogo(v, values.get(position), position);
+                    }
+
+                }
+            });
+        }
+
+    }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -68,35 +98,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         return values.size();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
 
-        public ImageView itemImage;
-        public TextView itemTitle;
-        public TextView itemDetail;
-        public View fondo;
-        ViewHolder(View itemView) {
-            super(itemView);
-            fondo =  itemView.findViewById(R.id.card_view);
-            itemImage = (ImageView)itemView.findViewById(R.id.item_image);
-            itemTitle = (TextView)itemView.findViewById(R.id.item_title);
-            itemDetail = (TextView)itemView.findViewById(R.id.item_detail);
-
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override public void onClick(View v) {
-                    int position = getAdapterPosition();
-
-                    Snackbar.make(v, "Click detected on item " + position,
-                            Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                    if(soyAdmin()) {
-                        dialogo(v, values.get(position), position);
-                    }
-
-                }
-            });
-        }
-
-    }
 
     public void dialogo(View v, final Comentario comentario, final int position){
         AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
