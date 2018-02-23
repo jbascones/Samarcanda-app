@@ -1,14 +1,18 @@
 package com.jorgebascones.samarcanda;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.jorgebascones.samarcanda.Modelos.Fecha;
+import com.jorgebascones.samarcanda.Modelos.Tiempo;
 import com.jorgebascones.samarcanda.Modelos.Venta;
 import com.jorgebascones.samarcanda.viewholders.ViewHolderDataNull;
+import com.jorgebascones.samarcanda.viewholders.ViewHolderTiempo;
 import com.jorgebascones.samarcanda.viewholders.ViewHolderVenta;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -22,8 +26,9 @@ public class ComplexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     private ArrayList<Object> items;
     ArrayList<Venta> ventas;
     ArrayList<String> textoNull;
+    Tiempo tiempo;
 
-    private final int VENTA = 0, NULL = 1;
+    private final int VENTA = 0, NULL = 1, TIEMPO = 2;
 
     // Provide a suitable constructor (depends on the kind of dataset)
     public ComplexRecyclerViewAdapter(ArrayList<Object> items) {
@@ -44,6 +49,8 @@ public class ComplexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             return VENTA;
         } else if (items.get(position) instanceof String) {
             return NULL;
+        } else if (items.get(position) instanceof Tiempo) {
+            return TIEMPO;
         }
         return -1;
     }
@@ -72,6 +79,11 @@ public class ComplexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                 convertirATipo("Texto");
                 viewHolder = new ViewHolderDataNull(v2, textoNull);
                 break;
+            case TIEMPO:
+                View v3 = inflater.inflate(R.layout.viewholder_tiempo, viewGroup, false);
+                convertirATipo("Tiempo");
+                viewHolder = new ViewHolderTiempo(v3);
+                break;
             default:
                 v1 = inflater.inflate(R.layout.viewholder_venta, viewGroup, false);
                 viewHolder = new ViewHolderVenta(v1,ventas);
@@ -97,6 +109,17 @@ public class ComplexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         }
     }
 
+    private void configureViewHolderTiempo(ViewHolderTiempo vh3, int position) {
+
+        vh3.getLabel1().setText(tiempo.getTitulo());
+        vh3.getLabel2().setText(tiempo.getSubtitulo());
+        Context c = vh3.getLabel1().getContext();
+
+        Picasso.with(c).load(tiempo.getPhotoURL()).into(vh3.getIcono());
+
+
+    }
+
     /**
      * This method internally calls onBindViewHolder(ViewHolder, int) to update the
      * RecyclerView.ViewHolder contents with the item at the given position
@@ -115,6 +138,10 @@ public class ComplexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             case NULL:
                 ViewHolderDataNull vh2 = (ViewHolderDataNull) viewHolder;
                 configureViewHolderDataNull(vh2, position);
+                break;
+            case TIEMPO:
+                ViewHolderTiempo vh3 = (ViewHolderTiempo) viewHolder;
+                configureViewHolderTiempo(vh3, position);
                 break;
             default:
                 vh1 = (ViewHolderVenta) viewHolder;
@@ -136,6 +163,10 @@ public class ComplexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                 for (int i=0; i<items.size();i++){
                     textoNull.add((String) items.get(i));
                 }
+                break;
+            case "Tiempo":
+                tiempo =(Tiempo) items.get(0);
+
                 break;
 
         }

@@ -112,9 +112,6 @@ public class LectorQRActivity extends AppCompatActivity implements ZXingScannerV
         }
     }
 
-    public void leerArticuloManual(View v){
-        bajarArticulo("/camisetas/0123456789");
-    }
 
     public void cancelarArticulo(View v){
         venta.setArticulo(null);
@@ -155,6 +152,7 @@ public class LectorQRActivity extends AppCompatActivity implements ZXingScannerV
 
     public void setCliente(User cliente){
         venta.setUser(cliente);
+        setEdadCliente(cliente);
         gestionElements();
     }
 
@@ -275,7 +273,6 @@ public class LectorQRActivity extends AppCompatActivity implements ZXingScannerV
                     Log.d(TAG, "Cliente NULL");
                 }
 
-
             }
 
             @Override
@@ -359,6 +356,13 @@ public class LectorQRActivity extends AppCompatActivity implements ZXingScannerV
 
         venta.setClienteId(venta.getUser().getUsuarioId());
         venta.setUser(null);
+    }
+
+    public void setEdadCliente(User cliente){
+
+        Fecha fecha = new Fecha();
+
+        venta.setEdadVenta(fecha.calcularEdadVenta(cliente.getFechaNacimiento()));
     }
 
 

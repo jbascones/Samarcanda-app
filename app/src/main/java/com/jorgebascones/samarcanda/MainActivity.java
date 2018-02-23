@@ -121,6 +121,8 @@ public class MainActivity extends AppCompatActivity
         Snackbar.make(getWindow().getDecorView().getRootView(), "Hola de nuevo "+miUsuario.getNombre(), Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show();
 
+        lanzarNoticiasFragment();
+
     }
 
 
@@ -177,9 +179,7 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_noticias) {
 
-            //Intent intent = new Intent(this, CardActivity.class);
-            //startActivity(intent);
-
+            lanzarNoticiasFragment();
 
         } else if (id == R.id.nav_comentarios) {
 
@@ -476,6 +476,20 @@ public class MainActivity extends AppCompatActivity
 
                 }
             });
+        }
+
+        public void lanzarNoticiasFragment(){
+            NoticiasFragment noticiasFragment = new NoticiasFragment();
+
+            FragmentManager manager = getSupportFragmentManager();
+
+            manager.beginTransaction().replace(R.id.main_fragmento,
+                    noticiasFragment,
+                    noticiasFragment.getTag()
+            ).commit();
+
+
+            fragmenActual = "noticias";
         }
 
 

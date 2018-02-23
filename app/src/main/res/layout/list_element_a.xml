@@ -45,7 +45,6 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_alignTop="@id/id_element_id_a"
-        android:text="07 mar 2017"
         android:textColor="@color/bgGradientStart" />
     <Button
         android:id="@+id/id_cancelar_articulo"

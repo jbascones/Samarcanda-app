@@ -28,6 +28,8 @@ import com.jorgebascones.samarcanda.Modelos.Venta;
 
 import java.util.ArrayList;
 
+import pl.droidsonroids.gif.GifImageView;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -48,6 +50,7 @@ public class VerVentasFragment extends Fragment {
     public ArrayList<Articulo> articulos = new ArrayList<Articulo>();
     Fecha fecha;
     String fechaBuscada;
+    GifImageView gif;
 
 
     @Override
@@ -66,6 +69,8 @@ public class VerVentasFragment extends Fragment {
         fecha = new Fecha();
         fechaBuscada = fecha.getRutaVenta();
         descargarListaVentas(fechaBuscada);
+
+        gif = (GifImageView) view.findViewById(R.id.gifImageView);
 
         setListeners(view);
 
@@ -136,6 +141,8 @@ public class VerVentasFragment extends Fragment {
         }
         recyclerView.setAdapter(new ComplexRecyclerViewAdapter(listaValores));
 
+        cargando(false);
+
     }
 
     private void bindNullDataToAdapter() {
@@ -143,12 +150,13 @@ public class VerVentasFragment extends Fragment {
         ArrayList<Object> listaValores = new ArrayList<>();
         listaValores.add("No hay ninguna venta en esa fecha");
         recyclerView.setAdapter(new ComplexRecyclerViewAdapter(listaValores));
+        cargando(false);
 
     }
 
 
     public void rellenarListaVentas(){
-        //values.clear();
+
         for(int i=0;i<values.size();i++){
             bajarDatosArticulos(values.get(i).getArticuloId());
             bajarDatosClientes(values.get(i).getClienteId());
@@ -210,6 +218,7 @@ public class VerVentasFragment extends Fragment {
     }
 
     public void descargarListaVentas(String ruta){
+
         // Read from the database
         FirebaseDatabase database = FirebaseDatabase.getInstance();
 
@@ -226,7 +235,7 @@ public class VerVentasFragment extends Fragment {
                     Log.v("Funciona",""+ childDataSnapshot.getKey()); //displays the key for the node
                     Log.v("Funciona",""+ childDataSnapshot.getValue());
                     addValue(childDataSnapshot.getKey(), childDataSnapshot.getValue(Venta.class));
-                    //TODO: manejar cuando no hay ninguna venta en la ruta
+
 
                 }
 
@@ -255,6 +264,10 @@ public class VerVentasFragment extends Fragment {
         buttonDiaAnterior.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                //Cuando se vayan a bajar las ventas, el gif debe aparecer para mostrar actividad de red
+                cargando(true);
+
                 values.clear();
                 //TODO: Cache para guardar artículos y clientes. Por ej con un mapping
                 articulos.clear();
@@ -271,6 +284,10 @@ public class VerVentasFragment extends Fragment {
         buttonDiaSiguiente.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                //Cuando se vayan a bajar las ventas, el gif debe aparecer para mostrar actividad de red
+                cargando(true);
+
                 values.clear();
                 //TODO: Cache para guardar artículos y clientes. Por ej con un mapping
                 articulos.clear();
@@ -285,6 +302,14 @@ public class VerVentasFragment extends Fragment {
         });
 
 
+    }
+
+    public void cargando(boolean cargando){
+        if (cargando){
+            gif.setVisibility(View.VISIBLE);
+        }else{
+            gif.setVisibility(View.INVISIBLE);
+        }
     }
 
 

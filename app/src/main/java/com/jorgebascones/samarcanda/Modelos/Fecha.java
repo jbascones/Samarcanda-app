@@ -72,11 +72,24 @@ public class Fecha {
 
         String anno = getAnno(fecha);
 
-        int dia =  Integer.parseInt(getDia(fecha)) + dias;
+        int dia =  StringToInt(getDia(fecha)) + dias;
 
         String ruta = anno + "/" + mes + "/" + dia;
 
         return ruta;
+    }
+
+    public int calcularEdadVenta(String nacimiento){
+
+        int edad;
+
+        edad = StringToInt(getAnno(fecha)) - StringToInt(getAnno(nacimiento));
+
+        return edad;
+    }
+
+    public  int StringToInt(String str){
+        return Integer.parseInt(str);
     }
 
 

@@ -37,6 +37,7 @@
         android:src="@drawable/loading_gif"
         android:background="@drawable/loading_gif"
         android:id="@+id/loading"
+        android:visibility="invisible"
         />
     <include
         layout="@layout/fab"

@@ -19,6 +19,7 @@ public class User {
     public String urlFoto;
     public int numeroTelefono;
     public String mail;
+    public String fechaNacimiento;
 
 
 
@@ -72,6 +73,14 @@ public class User {
 
     public void setNumeroTelefono(int numeroTelefono) {
         this.numeroTelefono = numeroTelefono;
+    }
+
+    public String getFechaNacimiento() {
+        return fechaNacimiento;
+    }
+
+    public void setFechaNacimiento(String fechaNacimiento) {
+        this.fechaNacimiento = fechaNacimiento;
     }
 
     public boolean rellenarPerfil(){

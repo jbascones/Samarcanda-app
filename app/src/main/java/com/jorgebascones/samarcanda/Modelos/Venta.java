@@ -13,6 +13,7 @@ public class Venta {
     public String clienteId;
     public String articuloId;
     public String ventaKey;
+    public int edadVenta;
 
 
 
@@ -71,5 +72,13 @@ public class Venta {
 
     public void setVentaKey(String ventaKey) {
         this.ventaKey = ventaKey;
+    }
+
+    public int getEdadVenta() {
+        return edadVenta;
+    }
+
+    public void setEdadVenta(int edadVenta) {
+        this.edadVenta = edadVenta;
     }
 }
