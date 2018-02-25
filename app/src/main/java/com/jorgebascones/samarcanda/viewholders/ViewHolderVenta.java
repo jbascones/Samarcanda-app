@@ -28,17 +28,6 @@ public class ViewHolderVenta extends RecyclerView.ViewHolder {
         label2 = (TextView) v.findViewById(R.id.text2);
         label3 = (TextView) v.findViewById(R.id.text3);
 
-        v.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                int position = getAdapterPosition();
-
-
-                Articulo aSeleccionado = ventas.get(position).getArticulo();
-                User cliente = ventas.get(position).getUser();
-                setupDialog(0,aSeleccionado.getNombre(),aSeleccionado.getUnidades(),cliente.getNombre());
-
-            }
-        });
     }
 
     public TextView getLabel1() {

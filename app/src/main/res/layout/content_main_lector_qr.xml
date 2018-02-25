@@ -37,16 +37,6 @@
         android:layout_centerHorizontal="true" />
 
 
-    <com.dd.morphingbutton.MorphingButton
-        android:id="@+id/id_leer_cliente"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/articulo_element"
-        android:layout_marginTop="70dp"
-        android:onClick="success"
-        android:textColor="@color/bgGradientStart" />
-
     <Button
         android:id="@+id/button_finish"
         android:layout_width="wrap_content"
@@ -95,18 +85,34 @@
         android:layout_alignStart="@+id/id_button_leer_articulo" />
 
     <Button
-        android:id="@+id/id_bn_terminar_venta"
+        android:id="@+id/id_bn_ir_carrito"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Terminar"
-        android:onClick="subirVenta"
+        android:layout_below="@+id/id_bn_siguiente_articulo"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="23dp"
+        android:text="Ir al carrito"
+        android:onClick="lanzarPantallaCarrito"
+        android:theme="@style/ThemeOverlay.MyDarkButton" />
+    <Button
+        android:id="@+id/id_bn_siguiente_articulo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Siguiente artículo"
+        android:onClick="leerQR"
         android:theme="@style/ThemeOverlay.MyDarkButton"
-        android:layout_below="@+id/id_leer_cliente"
-        android:layout_alignLeft="@+id/button_finish"
-        android:layout_alignStart="@+id/button_finish"
-        android:layout_marginTop="32dp"
-        android:layout_centerHorizontal="true"/>
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
 
+    <TextView
+        android:id="@+id/id_txt_articulos_carrito"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/id_bn_ir_carrito"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="19dp"
+        android:text="TextView"
+        android:textStyle="bold" />
 
 
 </android.widget.RelativeLayout>

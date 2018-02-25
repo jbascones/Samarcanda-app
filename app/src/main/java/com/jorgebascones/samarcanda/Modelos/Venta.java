@@ -6,14 +6,15 @@ package com.jorgebascones.samarcanda.Modelos;
 
 public class Venta {
 
-    public String userId;
     public User user;
-    public Articulo articulo;
     public String fecha;
     public String clienteId;
     public String articuloId;
     public String ventaKey;
     public int edadVenta;
+    public int numeroArticulos;
+    public String nombresArticulos;
+    public int importe;
 
 
 
@@ -23,23 +24,6 @@ public class Venta {
 
     public void setUser(User user) {
         this.user = user;
-    }
-
-    public Articulo getArticulo() {
-        return articulo;
-    }
-
-    public void setArticulo(Articulo articulo) {
-        this.articulo = articulo;
-    }
-
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
     }
 
     public String getFecha() {
@@ -78,7 +62,35 @@ public class Venta {
         return edadVenta;
     }
 
+    public int getNumeroArticulos() {
+        return numeroArticulos;
+    }
+
+    public void setNumeroArticulos(int numeroArticulos) {
+        this.numeroArticulos = numeroArticulos;
+    }
+
+    public String getNombresArticulos() {
+        return nombresArticulos;
+    }
+
+    public void setNombresArticulos(String nombresArticulos) {
+        this.nombresArticulos = nombresArticulos;
+    }
+
+    public void addNumeroArticulos(){
+        numeroArticulos++;
+    }
+
     public void setEdadVenta(int edadVenta) {
         this.edadVenta = edadVenta;
+    }
+
+    public int getImporte() {
+        return importe;
+    }
+
+    public void setImporte(int importe) {
+        this.importe = importe;
     }
 }

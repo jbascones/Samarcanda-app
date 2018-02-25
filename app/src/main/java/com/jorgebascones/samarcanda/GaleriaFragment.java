@@ -50,7 +50,7 @@ public class GaleriaFragment extends Fragment {
         ((MainActivity) getActivity()).getSupportActionBar().setTitle("Galeria");
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
-        recyclerView.setHasFixedSize(true);
+        recyclerView.setHasFixedSize(false);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         new GetDataFromFirebase().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);

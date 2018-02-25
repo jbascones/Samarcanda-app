@@ -41,16 +41,16 @@ public class VerVentasFragment extends Fragment {
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     RecyclerView recyclerView;
-    RecyclerView.LayoutManager layoutManager;
-    RecyclerView.Adapter adapter;
     public ArrayList<Venta> values = new ArrayList<Venta>();
     public ArrayList<String> keys = new ArrayList<String>();
     String TAG = "verVentas";
     public ArrayList<User> clientes = new ArrayList<User>();
-    public ArrayList<Articulo> articulos = new ArrayList<Articulo>();
+    public ArrayList<ArrayList<Articulo>> articulos = new ArrayList<>();
+    public ArrayList<String> nombresArticulos = new ArrayList<>();
     Fecha fecha;
     String fechaBuscada;
     GifImageView gif;
+
 
 
     @Override
@@ -63,8 +63,8 @@ public class VerVentasFragment extends Fragment {
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
-
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
         new GetDataFromFirebase().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         fecha = new Fecha();
         fechaBuscada = fecha.getRutaVenta();
@@ -158,7 +158,10 @@ public class VerVentasFragment extends Fragment {
     public void rellenarListaVentas(){
 
         for(int i=0;i<values.size();i++){
-            bajarDatosArticulos(values.get(i).getArticuloId());
+            ArrayList<String> ids = getIdsArticulos(i);
+            for (int j =0; j<ids.size();j++){
+                bajarDatosArticulos(ids.get(j),i);
+            }
             bajarDatosClientes(values.get(i).getClienteId());
         }
     }
@@ -185,7 +188,7 @@ public class VerVentasFragment extends Fragment {
         });
     }
 
-    public void bajarDatosArticulos(String ruta){
+    public void bajarDatosArticulos(String ruta, final int posicion){
         DatabaseReference myRef = database.getReference("articulos/"+ruta);
 
         // Read from the database
@@ -195,7 +198,11 @@ public class VerVentasFragment extends Fragment {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
                 Articulo articulo = dataSnapshot.getValue(Articulo.class);
-                articulos.add(articulo);
+                if(articulos.size()-1<posicion){
+                    ArrayList<Articulo> aux = new ArrayList<>();
+                    articulos.add(aux);
+                }
+                articulos.get(posicion).add(articulo);
                 comprobarDatosBajados();
             }
 
@@ -208,10 +215,11 @@ public class VerVentasFragment extends Fragment {
     }
 
     public void comprobarDatosBajados(){
+        setNombresArticulos();
         if(clientes.size()==values.size() && articulos.size()==values.size()){
             for(int i =0;i<values.size();i++){
                 values.get(i).setUser(clientes.get(i));
-                values.get(i).setArticulo(articulos.get(i));
+                values.get(i).setNombresArticulos(nombresArticulos.get(i));
             }
                 bindDataToAdapter();
         }
@@ -310,6 +318,42 @@ public class VerVentasFragment extends Fragment {
         }else{
             gif.setVisibility(View.INVISIBLE);
         }
+    }
+
+    public ArrayList<String> getIdsArticulos(int pos){
+        ArrayList<String> ids = new ArrayList<>();
+        ArrayList<Integer> cortes = new ArrayList<>();
+        cortes.add(-1);
+
+        for(int i =0; i< values.get(pos).getArticuloId().length(); i++){
+            if (values.get(pos).getArticuloId().charAt(i)=='&'){
+                cortes.add(i);
+            }
+        }
+
+        for (int i =0; i<cortes.size()-1;i++){
+            ids.add(values.get(pos).getArticuloId().substring(cortes.get(i)+1,cortes.get(i+1)));
+        }
+
+
+        return ids;
+    }
+
+    public void setNombresArticulos(){
+        nombresArticulos.clear();
+        for (int i=0; i<articulos.size();i++){
+            String nombres = "";
+            for (int j=0;j<articulos.get(i).size();j++){
+                String retorno = "\n";
+                if (j==articulos.get(i).size()-1){
+                    retorno = "";
+                }
+                nombres = nombres + articulos.get(i).get(j).getNombre() + retorno;
+            }
+            nombresArticulos.add(nombres);
+
+        }
+
     }
 
 

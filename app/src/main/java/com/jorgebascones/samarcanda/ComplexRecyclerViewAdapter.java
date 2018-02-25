@@ -6,12 +6,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.jorgebascones.samarcanda.Modelos.Articulo;
+import com.jorgebascones.samarcanda.Modelos.CarritoItem;
 import com.jorgebascones.samarcanda.Modelos.Fecha;
 import com.jorgebascones.samarcanda.Modelos.Tiempo;
 import com.jorgebascones.samarcanda.Modelos.Venta;
 import com.jorgebascones.samarcanda.viewholders.ViewHolderDataNull;
 import com.jorgebascones.samarcanda.viewholders.ViewHolderTiempo;
 import com.jorgebascones.samarcanda.viewholders.ViewHolderVenta;
+import com.jorgebascones.samarcanda.viewholders.ViewHolderVentaArticulos;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -28,7 +31,7 @@ public class ComplexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     ArrayList<String> textoNull;
     Tiempo tiempo;
 
-    private final int VENTA = 0, NULL = 1, TIEMPO = 2;
+    private final int VENTA = 0, NULL = 1, TIEMPO = 2, CARRITO = 3;
 
     // Provide a suitable constructor (depends on the kind of dataset)
     public ComplexRecyclerViewAdapter(ArrayList<Object> items) {
@@ -51,6 +54,8 @@ public class ComplexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             return NULL;
         } else if (items.get(position) instanceof Tiempo) {
             return TIEMPO;
+        }else if (items.get(position) instanceof CarritoItem) {
+            return CARRITO;
         }
         return -1;
     }
@@ -84,6 +89,11 @@ public class ComplexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                 convertirATipo("Tiempo");
                 viewHolder = new ViewHolderTiempo(v3);
                 break;
+            case CARRITO:
+                View v4 = inflater.inflate(R.layout.list_element_a, viewGroup, false);
+                convertirATipo("Carrito");
+                viewHolder = new ViewHolderVentaArticulos(v4);
+                break;
             default:
                 v1 = inflater.inflate(R.layout.viewholder_venta, viewGroup, false);
                 viewHolder = new ViewHolderVenta(v1,ventas);
@@ -94,7 +104,7 @@ public class ComplexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     private void configureViewHolderVenta(ViewHolderVenta vh1, int position) {
         Venta venta = (Venta) items.get(position);
         if (venta != null) {
-            vh1.getLabel1().setText("Articulo: " + venta.getArticulo().getNombre());
+            vh1.getLabel1().setText("Articulo: " + venta.getNombresArticulos());
             vh1.getLabel2().setText("Cliente: " + venta.getUser().getNombre());
             Fecha fecha = new Fecha();
             vh1.getLabel3().setText("Fecha: "+fecha.fechaPreparada(venta.getFecha(), true));
@@ -117,6 +127,16 @@ public class ComplexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
         Picasso.with(c).load(tiempo.getPhotoURL()).into(vh3.getIcono());
 
+    }
+
+    private void configureViewHolderVentaArticulos(ViewHolderVentaArticulos vh4, int position) {
+        CarritoItem c = (CarritoItem) items.get(position);
+        Articulo a = c.getCarritoItem();
+        vh4.getLabel1().setText("Articulo");
+        vh4.getLabel2().setText(a.getNombre());
+        Context context = vh4.getLabel1().getContext();
+
+        Picasso.with(context).load(a.getFotoUrl()).into(vh4.getImageView());
 
     }
 
@@ -142,6 +162,10 @@ public class ComplexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             case TIEMPO:
                 ViewHolderTiempo vh3 = (ViewHolderTiempo) viewHolder;
                 configureViewHolderTiempo(vh3, position);
+                break;
+            case CARRITO:
+                ViewHolderVentaArticulos vh4 = (ViewHolderVentaArticulos) viewHolder;
+                configureViewHolderVentaArticulos(vh4, position);
                 break;
             default:
                 vh1 = (ViewHolderVenta) viewHolder;
@@ -170,6 +194,10 @@ public class ComplexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                 break;
 
         }
+    }
+
+    public void nuevoItem(int posicion){
+        notifyItemInserted(posicion);
     }
 
 }

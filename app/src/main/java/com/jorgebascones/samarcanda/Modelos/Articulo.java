@@ -11,6 +11,7 @@ public class Articulo {
     public String categoria;
     public int unidades;
     public String fotoUrl;
+    public int precio;
 
     public Articulo(){
 
@@ -55,7 +56,11 @@ public class Articulo {
         this.fotoUrl = fotoUrl;
     }
 
+    public int getPrecio() {
+        return precio;
+    }
 
-
-
+    public void setPrecio(int precio) {
+        this.precio = precio;
+    }
 }
