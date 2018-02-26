@@ -25,6 +25,7 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.UUID;
 
@@ -42,6 +43,8 @@ public class SubirPost extends Fragment {
     private Uri filePath;
 
     Context c;
+
+    Bitmap bitmap;
 
     private final int PICK_IMAGE_REQUEST = 71;
 
@@ -106,7 +109,8 @@ public class SubirPost extends Fragment {
             filePath = data.getData();
             try {
 
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(c.getContentResolver(), filePath);
+                bitmap = MediaStore.Images.Media.getBitmap(c.getContentResolver(), filePath);
+                bitmap = Bitmap.createScaledBitmap(bitmap, 100, 100, false);
                 imageView.setImageBitmap(bitmap);
             }
             catch (IOException e)
@@ -124,8 +128,19 @@ public class SubirPost extends Fragment {
             //progressDialog.setTitle("Uploading...");
             //progressDialog.show();
 
-            StorageReference ref = storageReference.child("images/"+ UUID.randomUUID().toString());
-            ref.putFile(filePath)
+            // Get the data from an ImageView as bytes
+            imageView.setDrawingCacheEnabled(true);
+            imageView.buildDrawingCache();
+            Bitmap bitmap = imageView.getDrawingCache();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            byte[] data = baos.toByteArray();
+
+
+            //StorageReference ref = storageReference.child("images/"+ UUID.randomUUID().toString());
+            String ruta = "perfil de jorge";
+            StorageReference ref = storageReference.child("images/"+ ruta);
+            ref.putBytes(data)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {

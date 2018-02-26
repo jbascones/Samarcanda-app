@@ -53,10 +53,22 @@ card_view:contentPadding="4dp">
             android:id="@+id/imageView7"
             android:layout_width="50dp"
             android:layout_height="50dp"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/text4"
+            android:layout_centerVertical="true"
+            card_view:srcCompat="@drawable/background_dialog_icon" />
+
+        <TextView
+            android:id="@+id/text4"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignBottom="@+id/imageView7"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            card_view:srcCompat="@drawable/background_dialog_icon" />
+            android:gravity="center"
+            android:text="9ºC"
+            android:textColor="@color/bgGradientStart"
+            android:textSize="20sp" />
 
 
     </RelativeLayout>

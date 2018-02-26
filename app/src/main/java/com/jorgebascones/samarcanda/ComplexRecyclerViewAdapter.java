@@ -1,6 +1,8 @@
 package com.jorgebascones.samarcanda;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,9 +10,11 @@ import android.view.ViewGroup;
 
 import com.jorgebascones.samarcanda.Modelos.Articulo;
 import com.jorgebascones.samarcanda.Modelos.CarritoItem;
+import com.jorgebascones.samarcanda.Modelos.Categoria;
 import com.jorgebascones.samarcanda.Modelos.Fecha;
 import com.jorgebascones.samarcanda.Modelos.Tiempo;
 import com.jorgebascones.samarcanda.Modelos.Venta;
+import com.jorgebascones.samarcanda.viewholders.ViewHolderCategoria;
 import com.jorgebascones.samarcanda.viewholders.ViewHolderDataNull;
 import com.jorgebascones.samarcanda.viewholders.ViewHolderTiempo;
 import com.jorgebascones.samarcanda.viewholders.ViewHolderVenta;
@@ -30,8 +34,9 @@ public class ComplexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     ArrayList<Venta> ventas;
     ArrayList<String> textoNull;
     Tiempo tiempo;
+    ArrayList<Categoria> categoria;
 
-    private final int VENTA = 0, NULL = 1, TIEMPO = 2, CARRITO = 3;
+    private final int VENTA = 0, NULL = 1, TIEMPO = 2, CARRITO = 3, CATEGORIA = 4;
 
     // Provide a suitable constructor (depends on the kind of dataset)
     public ComplexRecyclerViewAdapter(ArrayList<Object> items) {
@@ -56,6 +61,8 @@ public class ComplexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             return TIEMPO;
         }else if (items.get(position) instanceof CarritoItem) {
             return CARRITO;
+        }else if (items.get(position) instanceof Categoria) {
+            return CATEGORIA;
         }
         return -1;
     }
@@ -94,6 +101,11 @@ public class ComplexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                 convertirATipo("Carrito");
                 viewHolder = new ViewHolderVentaArticulos(v4);
                 break;
+            case CATEGORIA:
+                View v5 = inflater.inflate(R.layout.viewholder_categoria, viewGroup, false);
+                convertirATipo("Categoria");
+                viewHolder = new ViewHolderCategoria(v5);
+                break;
             default:
                 v1 = inflater.inflate(R.layout.viewholder_venta, viewGroup, false);
                 viewHolder = new ViewHolderVenta(v1,ventas);
@@ -123,6 +135,7 @@ public class ComplexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
         vh3.getLabel1().setText(tiempo.getTitulo());
         vh3.getLabel2().setText(tiempo.getSubtitulo());
+        vh3.getLabel4().setText(tiempo.getTemperatura()+"ºC");
         Context c = vh3.getLabel1().getContext();
 
         Picasso.with(c).load(tiempo.getPhotoURL()).into(vh3.getIcono());
@@ -137,6 +150,16 @@ public class ComplexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         Context context = vh4.getLabel1().getContext();
 
         Picasso.with(context).load(a.getFotoUrl()).into(vh4.getImageView());
+
+    }
+
+    private void configureViewHolderCategoria(ViewHolderCategoria vh5, int position) {
+        Categoria c = (Categoria) items.get(position);
+        vh5.getLabel1().setText(c.getNombre());
+        vh5.getIcono().setImageDrawable(ContextCompat.getDrawable(vh5.getIcono().getContext(), R.drawable.inicio));
+        Context context = vh5.getLabel1().getContext();
+
+        Picasso.with(context).load(c.getUrlFoto()).into(vh5.getIcono());
 
     }
 
@@ -167,6 +190,10 @@ public class ComplexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                 ViewHolderVentaArticulos vh4 = (ViewHolderVentaArticulos) viewHolder;
                 configureViewHolderVentaArticulos(vh4, position);
                 break;
+            case CATEGORIA:
+                ViewHolderCategoria vh5 = (ViewHolderCategoria) viewHolder;
+                configureViewHolderCategoria(vh5, position);
+                break;
             default:
                 vh1 = (ViewHolderVenta) viewHolder;
                 configureViewHolderVenta(vh1, position);
@@ -190,6 +217,13 @@ public class ComplexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                 break;
             case "Tiempo":
                 tiempo =(Tiempo) items.get(0);
+
+                break;
+            case "Categoria":
+                categoria = new ArrayList<>();
+                for (int i=0; i<items.size();i++){
+                    categoria.add((Categoria) items.get(i));
+                }
 
                 break;
 

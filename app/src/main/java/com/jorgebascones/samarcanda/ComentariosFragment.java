@@ -28,7 +28,7 @@ import java.util.ArrayList;
  * A simple {@link Fragment} subclass.
  */
 
-public class GaleriaFragment extends Fragment {
+public class ComentariosFragment extends Fragment {
 
 
     FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -47,7 +47,7 @@ public class GaleriaFragment extends Fragment {
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_galeria, container, false);
 
-        ((MainActivity) getActivity()).getSupportActionBar().setTitle("Galeria");
+        ((MainActivity) getActivity()).getSupportActionBar().setTitle("Comentarios");
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(false);

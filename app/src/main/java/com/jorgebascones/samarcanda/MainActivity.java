@@ -183,7 +183,7 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_comentarios) {
 
-            GaleriaFragment galeriaFragment = new GaleriaFragment();
+            ComentariosFragment galeriaFragment = new ComentariosFragment();
 
             FragmentManager manager = getSupportFragmentManager();
 
@@ -229,21 +229,21 @@ public class MainActivity extends AppCompatActivity
             fragmenActual = "tarjeta";
 
 
-        } /*else if (id == R.id.nav_share) {
+        } else if (id == R.id.nav_catalogo) {
 
-            VentaFragment publicarFragment = new VentaFragment();
+            CatalogoFragment catalogoFragment = new CatalogoFragment();
 
             FragmentManager manager = getSupportFragmentManager();
 
             manager.beginTransaction().replace(R.id.main_fragmento,
-                    publicarFragment,
-                    publicarFragment.getTag()
+                    catalogoFragment,
+                    catalogoFragment.getTag()
             ).commit();
 
             loading.setVisibility(View.INVISIBLE);
 
 
-        } */else if (id == R.id.nav_send) {
+        } else if (id == R.id.nav_send) {
             SubirPost subirPost = new SubirPost();
 
             FragmentManager manager = getSupportFragmentManager();

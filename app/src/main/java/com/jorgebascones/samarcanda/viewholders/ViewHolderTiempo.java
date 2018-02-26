@@ -21,7 +21,7 @@ import libs.mjn.prettydialog.PrettyDialogCallback;
 
 public class ViewHolderTiempo extends RecyclerView.ViewHolder {
 
-    private TextView label1, label2, label3;
+    private TextView label1, label2, label3, label4;
     private ImageView icono;
 
     public ViewHolderTiempo(View v) {
@@ -29,6 +29,7 @@ public class ViewHolderTiempo extends RecyclerView.ViewHolder {
         label1 = (TextView) v.findViewById(R.id.text1);
         label2 = (TextView) v.findViewById(R.id.text2);
         label3 = (TextView) v.findViewById(R.id.text3);
+        label4 = (TextView) v.findViewById(R.id.text4);
         icono = (ImageView) v.findViewById(R.id.imageView7);
 
         v.setOnClickListener(new View.OnClickListener() {
@@ -69,6 +70,14 @@ public class ViewHolderTiempo extends RecyclerView.ViewHolder {
 
     public void setIcono(ImageView icono) {
         this.icono = icono;
+    }
+
+    public TextView getLabel4() {
+        return label4;
+    }
+
+    public void setLabel4(TextView label4) {
+        this.label4 = label4;
     }
 }
 

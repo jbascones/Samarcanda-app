@@ -95,8 +95,6 @@ public class VerVentasFragment extends Fragment {
         }
 
 
-
-
     }
 
 
@@ -198,12 +196,19 @@ public class VerVentasFragment extends Fragment {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
                 Articulo articulo = dataSnapshot.getValue(Articulo.class);
-                if(articulos.size()-1<posicion){
+                if(articulos.size()<posicion || articulos.size()==posicion){
                     ArrayList<Articulo> aux = new ArrayList<>();
                     articulos.add(aux);
                 }
+                try{
                 articulos.get(posicion).add(articulo);
                 comprobarDatosBajados();
+                }catch (Exception e){
+                    ArrayList<Articulo> aux = new ArrayList<>();
+                    articulos.add(aux);
+                    articulos.get(posicion).add(articulo);
+                    comprobarDatosBajados();
+                }
             }
 
             @Override
