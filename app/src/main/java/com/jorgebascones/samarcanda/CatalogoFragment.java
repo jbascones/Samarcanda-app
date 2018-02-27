@@ -244,7 +244,6 @@ public class CatalogoFragment extends Fragment {
         }
 
     }
-
     public void descargarListaArticulos(String ruta){
 
         // Read from the database
