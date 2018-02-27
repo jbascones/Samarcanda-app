@@ -1,6 +1,9 @@
 package com.jorgebascones.samarcanda;
 
 
+import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,6 +16,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,6 +39,7 @@ import com.jorgebascones.samarcanda.Modelos.Categoria;
 import com.jorgebascones.samarcanda.Modelos.Fecha;
 import com.jorgebascones.samarcanda.Modelos.Tiempo;
 import com.jorgebascones.samarcanda.Modelos.Venta;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,6 +50,7 @@ import java.util.Objects;
 import pl.droidsonroids.gif.GifImageView;
 
 import static java.lang.Math.round;
+import static java.lang.Math.subtractExact;
 
 
 /**
@@ -65,11 +72,13 @@ public class CatalogoFragment extends Fragment {
     public ArrayList<Object> articulos = new ArrayList<>();
     public ArrayList<Object> data = new ArrayList<>();
     public String categoriaElegida;
+    public Articulo articuloElegido;
     Button atras;
     TextView cabecera;
     final String TAG = "catalogo";
     Fecha fecha;
     GifImageView gif;
+    Dialog dialog;
 
 
 
@@ -86,14 +95,6 @@ public class CatalogoFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2, GridLayoutManager.VERTICAL, false));
 
-/*
-        recyclerView.setOnItemClickListener(new ComplexRecyclerViewAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                //String name = users.get(position).name;
-                Toast.makeText(this, name + " was clicked!", Toast.LENGTH_SHORT).show();
-            }
-        }); */
 
         new GetDataFromFirebase().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         fecha = new Fecha();
@@ -104,6 +105,8 @@ public class CatalogoFragment extends Fragment {
 
         atras = (Button) view.findViewById(R.id.id_bn_atras);
         cabecera = (TextView) view.findViewById(R.id.textView6);
+
+        categoriaElegida= "CATEGORIAS";
 
         setClickBotonAtras(view);
 
@@ -155,13 +158,18 @@ public class CatalogoFragment extends Fragment {
         adapter.setOnItemClickListener(new ComplexRecyclerViewAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                Categoria categoriaSeleccionada = (Categoria) categorias.get(position);
-                //Toast.makeText(getActivity(), categoriaSeleccionada.getNombre() + " seleccionada!", Toast.LENGTH_SHORT).show();
-                articulos.clear();
-                keysArticulos.clear();
-                categoriaElegida = categoriaSeleccionada.getNombre();
-                descargarListaArticulos(categoriaSeleccionada.getRuta());
-                setCabecera();
+                if(categoriaElegida.equals("CATEGORIAS")) {
+                    Categoria categoriaSeleccionada = (Categoria) categorias.get(position);
+                    //Toast.makeText(getActivity(), categoriaSeleccionada.getNombre() + " seleccionada!", Toast.LENGTH_SHORT).show();
+                    articulos.clear();
+                    keysArticulos.clear();
+                    categoriaElegida = categoriaSeleccionada.getNombre();
+                    descargarListaArticulos(categoriaSeleccionada.getRuta());
+                    setCabecera();
+                }else{
+                    articuloElegido = (Articulo)articulos.get(position);
+                    showDialog();
+                }
             }
         });
 
@@ -330,6 +338,51 @@ public class CatalogoFragment extends Fragment {
     public void setCabecera(){
         cabecera.setText(categoriaElegida);
     }
+
+    //Codigo del pop up cuando seleccionas un articulo
+
+    private void showDialog() {
+        // custom dialog
+        dialog = new Dialog(getContext());
+        dialog.setContentView(R.layout.custom_dialog);
+
+        // set the custom dialog components - text, image and button
+        ImageButton close = (ImageButton) dialog.findViewById(R.id.btnClose);
+        Button buy = (Button) dialog.findViewById(R.id.btnBuy);
+        ImageView foto = (ImageView) dialog.findViewById(R.id.foto_pop_up);
+        TextView titulo = (TextView) dialog.findViewById(R.id.pop_titulo);
+        TextView subtitulo = (TextView) dialog.findViewById(R.id.pop_subtitulo);
+        TextView subtitulo2 = (TextView) dialog.findViewById(R.id.pop_subtitulo2);
+
+        // Close Button
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                //TODO Close button action
+            }
+        });
+
+        // Buy Button
+        buy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                //TODO Buy button action
+            }
+        });
+
+        //Set informacion del articulo
+        Picasso.with(foto.getContext()).load(articuloElegido.getFotoUrl()).into(foto);
+        titulo.setText(articuloElegido.getNombre());
+        subtitulo.setText("Precio: "+articuloElegido.getPrecio()+"€");
+        subtitulo2.setText("Unidades: "+articuloElegido.getUnidades());
+
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        dialog.show();
+    }
+
 
 
 }

@@ -241,6 +241,7 @@ public class MainActivity extends AppCompatActivity
             ).commit();
 
             loading.setVisibility(View.INVISIBLE);
+            fragmenActual = "catalogo";
 
 
         } else if (id == R.id.nav_send) {
