@@ -4,6 +4,7 @@ package com.jorgebascones.samarcanda;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -11,6 +12,9 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ftoslab.openweatherretrieverz.CurrentWeatherInfo;
 import com.ftoslab.openweatherretrieverz.DailyForecastCallback;
@@ -32,7 +36,10 @@ import com.jorgebascones.samarcanda.Modelos.Tiempo;
 import com.jorgebascones.samarcanda.Modelos.Venta;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import pl.droidsonroids.gif.GifImageView;
 
@@ -51,15 +58,19 @@ public class CatalogoFragment extends Fragment {
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
-    RecyclerView.Adapter adapter;
+    ComplexRecyclerViewAdapter adapter;
     public ArrayList<String> keys = new ArrayList<String>();
     public ArrayList<String> keysArticulos = new ArrayList<String>();
     public ArrayList<Object> categorias = new ArrayList<>();
     public ArrayList<Object> articulos = new ArrayList<>();
+    public ArrayList<Object> data = new ArrayList<>();
+    public String categoriaElegida;
+    Button atras;
+    TextView cabecera;
     final String TAG = "catalogo";
     Fecha fecha;
     GifImageView gif;
-    CurrentWeatherInfo currentWeatherInfoC;
+
 
 
 
@@ -73,7 +84,16 @@ public class CatalogoFragment extends Fragment {
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2, GridLayoutManager.VERTICAL, false));
+
+/*
+        recyclerView.setOnItemClickListener(new ComplexRecyclerViewAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                //String name = users.get(position).name;
+                Toast.makeText(this, name + " was clicked!", Toast.LENGTH_SHORT).show();
+            }
+        }); */
 
         new GetDataFromFirebase().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         fecha = new Fecha();
@@ -81,6 +101,11 @@ public class CatalogoFragment extends Fragment {
         gif = (GifImageView) view.findViewById(R.id.gifImageView);
 
         descargarListaCategorias();
+
+        atras = (Button) view.findViewById(R.id.id_bn_atras);
+        cabecera = (TextView) view.findViewById(R.id.textView6);
+
+        setClickBotonAtras(view);
 
 
         return view;
@@ -125,7 +150,22 @@ public class CatalogoFragment extends Fragment {
     private void bindDataToAdapter() {
         // Bind adapter to recycler view object
 
-        recyclerView.setAdapter(new ComplexRecyclerViewAdapter(categorias));
+        adapter = new ComplexRecyclerViewAdapter(data);
+
+        adapter.setOnItemClickListener(new ComplexRecyclerViewAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Categoria categoriaSeleccionada = (Categoria) categorias.get(position);
+                //Toast.makeText(getActivity(), categoriaSeleccionada.getNombre() + " seleccionada!", Toast.LENGTH_SHORT).show();
+                articulos.clear();
+                keysArticulos.clear();
+                categoriaElegida = categoriaSeleccionada.getNombre();
+                descargarListaArticulos(categoriaSeleccionada.getRuta());
+                setCabecera();
+            }
+        });
+
+        recyclerView.setAdapter(adapter);
 
         cargando(false);
 
@@ -175,7 +215,7 @@ public class CatalogoFragment extends Fragment {
                 if(categorias.size()==0){
                     bindNullDataToAdapter();
                 }
-
+                data.addAll(categorias);
                 bindDataToAdapter();
 
             }
@@ -230,7 +270,12 @@ public class CatalogoFragment extends Fragment {
                     bindNullDataToAdapter();
                 }
 
-                bindDataToAdapter();
+
+                ArrayList<Object> nuevoData = new ArrayList<>();
+                nuevoData.addAll(articulos);
+                visibilityAtras(true);
+
+                adapter.swap(nuevoData);
 
             }
 
@@ -259,7 +304,33 @@ public class CatalogoFragment extends Fragment {
 
     }
 
+    public void setClickBotonAtras(View v){
+        atras = (Button) v.findViewById(R.id.id_bn_atras);
+        atras.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
+                adapter.swap(categorias);
+                visibilityAtras(false);
+                categoriaElegida = "CATEGORIAS";
+                setCabecera();
+
+            }
+        });
+    }
+
+    public void visibilityAtras(Boolean visible){
+
+        if(visible){
+            atras.setVisibility(View.VISIBLE);
+        }else {
+            atras.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    public void setCabecera(){
+        cabecera.setText(categoriaElegida);
+    }
 
 
 }

@@ -479,17 +479,22 @@ public class MainActivity extends AppCompatActivity
         }
 
         public void lanzarNoticiasFragment(){
-            NoticiasFragment noticiasFragment = new NoticiasFragment();
+            try {
+                NoticiasFragment noticiasFragment = new NoticiasFragment();
 
-            FragmentManager manager = getSupportFragmentManager();
+                FragmentManager manager = getSupportFragmentManager();
 
-            manager.beginTransaction().replace(R.id.main_fragmento,
-                    noticiasFragment,
-                    noticiasFragment.getTag()
-            ).commit();
+                manager.beginTransaction().replace(R.id.main_fragmento,
+                        noticiasFragment,
+                        noticiasFragment.getTag()
+                ).commit();
 
 
-            fragmenActual = "noticias";
+                fragmenActual = "noticias";
+            }catch (Exception e ){
+                Log.d("Crash","Crash por onSaveInstanceState");
+            }
+
         }
 
 

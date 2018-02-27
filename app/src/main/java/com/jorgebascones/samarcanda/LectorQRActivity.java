@@ -263,7 +263,7 @@ public class LectorQRActivity extends AppCompatActivity implements ZXingScannerV
                 }
             }
 
-            Log.d(TAG,"Articulo, categoria "+ result.getText().substring(8,indice));
+            Log.d(TAG,"Articulo, categorias "+ result.getText().substring(8,indice));
             bajarArticulo(result.getText().substring(9));
         }
 

@@ -8,6 +8,7 @@ public class Categoria {
 
     public String nombre;
     public String urlFoto;
+    public String ruta;
 
 
 
@@ -31,5 +32,13 @@ public class Categoria {
 
     public void setUrlFoto(String urlFoto) {
         this.urlFoto = urlFoto;
+    }
+
+    public String getRuta() {
+        return ruta;
+    }
+
+    public void setRuta(String ruta) {
+        this.ruta = ruta;
     }
 }

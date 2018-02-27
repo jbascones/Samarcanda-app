@@ -12,13 +12,13 @@ import com.jorgebascones.samarcanda.R;
  * Created by jorgebascones on 26/2/18.
  */
 
-public class ViewHolderCategoria extends RecyclerView.ViewHolder {
+public class ViewHolderArticulo extends RecyclerView.ViewHolder {
 
     private TextView label1;
     private ImageView icono;
 
 
-    public ViewHolderCategoria(View v,final ComplexRecyclerViewAdapter.OnItemClickListener listener) {
+    public ViewHolderArticulo(View v, final ComplexRecyclerViewAdapter.OnItemClickListener listener) {
         super(v);
         label1 = (TextView) v.findViewById(R.id.text1);
         icono = (ImageView) v.findViewById(R.id.imageView7);
