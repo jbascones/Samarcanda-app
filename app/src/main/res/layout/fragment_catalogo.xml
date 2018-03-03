@@ -33,8 +33,10 @@
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_above="@+id/button2"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:layout_below="@+id/linea_layout" />
+        android:layout_below="@+id/linea_layout"
+        />
 
     <android.support.design.widget.AppBarLayout
         android:layout_height="wrap_content"
@@ -69,6 +71,15 @@
             android:textSize="30sp"
             android:textStyle="bold" />
     </LinearLayout>
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:theme="@style/ThemeOverlay.MyDarkButton"
+        android:text="Ver carrito" />
 
 
 </RelativeLayout>

@@ -47,6 +47,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import libs.mjn.prettydialog.PrettyDialog;
+import libs.mjn.prettydialog.PrettyDialogCallback;
 import pl.droidsonroids.gif.GifImageView;
 
 import static java.lang.Math.round;
@@ -71,9 +73,11 @@ public class CatalogoFragment extends Fragment {
     public ArrayList<Object> categorias = new ArrayList<>();
     public ArrayList<Object> articulos = new ArrayList<>();
     public ArrayList<Object> data = new ArrayList<>();
+    public ArrayList<Object> carrito = new ArrayList<>();
     public String categoriaElegida;
     public Articulo articuloElegido;
     Button atras;
+    Button botonCarrito;
     TextView cabecera;
     final String TAG = "catalogo";
     Fecha fecha;
@@ -105,10 +109,14 @@ public class CatalogoFragment extends Fragment {
 
         atras = (Button) view.findViewById(R.id.id_bn_atras);
         cabecera = (TextView) view.findViewById(R.id.textView6);
+        botonCarrito = (Button) view.findViewById(R.id.button2);
+        botonCarrito.setVisibility(View.INVISIBLE);
 
         categoriaElegida= "CATEGORIAS";
+        visibilityAtras(false);
 
         setClickBotonAtras(view);
+        setListenerBotonCarrito();
 
 
         return view;
@@ -316,18 +324,24 @@ public class CatalogoFragment extends Fragment {
         atras.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 adapter.swap(categorias);
                 visibilityAtras(false);
                 categoriaElegida = "CATEGORIAS";
                 setCabecera();
+                try{
+                    if(carrito.size()>0){
+                        gestionBotonCarrito();
+                    }
+                }catch (Exception e){
+
+                }
 
             }
         });
     }
 
     public void visibilityAtras(Boolean visible){
-
+            atras.setText("Atrás");
         if(visible){
             atras.setVisibility(View.VISIBLE);
         }else {
@@ -368,7 +382,8 @@ public class CatalogoFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-                //TODO Buy button action
+                carrito.add(articuloElegido);
+                gestionBotonCarrito();
             }
         });
 
@@ -381,6 +396,124 @@ public class CatalogoFragment extends Fragment {
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         dialog.show();
+    }
+
+    public void gestionBotonCarrito(){
+        botonCarrito.setVisibility(View.VISIBLE);
+        botonCarrito.setText("Ir al carrito ("+carrito.size()+" artículos)");
+
+    }
+
+    public void setListenerBotonCarrito(){
+        botonCarrito.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(categoriaElegida.equals("Carrito")){
+                    dialogConfirmar();
+                }else{
+                    flujoIrCarrito();
+                }
+            }
+        });
+    }
+
+    public void flujoIrCarrito(){
+        adapter.swap(carrito);
+        categoriaElegida = "Carrito";
+        setCabecera();
+        visibilityAtras(true);
+        botonCarrito.setText("Confirmar Reserva");
+    }
+
+    public void flujoCompletarReserva(){
+        atras.setText("Catálogo");
+        ArrayList<Object> texto = new ArrayList<>();
+        texto.add("Reserva realizada");
+        adapter.swap(texto);
+        carrito.clear();
+        botonCarrito.setVisibility(View.INVISIBLE);
+
+
+    }
+
+    public void dialogConfirmar(){
+        final PrettyDialog dialog = new PrettyDialog(getContext());
+        dialog
+                .setTitle("¿Confirmar reserva?")
+                .setMessage("El importe a pagar sería de "+ getPrecio()+"€")
+                .addButton(
+                        "Confirmar reserva",					// button text
+                        R.color.pdlg_color_white,		// button text color
+                        R.color.pdlg_color_green,		// button background color
+                        new PrettyDialogCallback() {		// button OnClick listener
+                            @Override
+                            public void onClick() {
+                                subirReserva();
+                                flujoCompletarReserva();
+                                dialog.dismiss();
+                            }
+                        }
+                )
+
+                // Cancel button
+                .addButton(
+                        "Volver",
+                        R.color.pdlg_color_white,
+                        R.color.pdlg_color_red,
+                        new PrettyDialogCallback() {
+                            @Override
+                            public void onClick() {
+                                dialog.dismiss();
+                            }
+                        }
+                )
+
+                // 3rd button
+                .addButton(
+                        "Borrar reserva",
+                        R.color.pdlg_color_black,
+                        R.color.pdlg_color_gray,
+                        new PrettyDialogCallback() {
+                            @Override
+                            public void onClick() {
+                                carrito.clear();
+                                dialog.dismiss();
+                            }
+                        }
+                )
+                .show();
+    }
+
+    public int getPrecio(){
+        int precio = 0;
+        for(int i=0;i<carrito.size();i++){
+            Articulo a = (Articulo)carrito.get(i);
+            precio = precio + a.getPrecio();
+        }
+        return precio;
+    }
+
+    public void subirReserva(){
+        Log.d(TAG,"Subiendo reserva");
+        Fecha fecha = new Fecha();
+        String ruta = fecha.getRutaVenta();
+        String hora = fecha.getHora(fecha.getFecha());
+        myRef.child("/reservas/"+ruta+"/"+user.getUid()+"/"+hora).setValue(articulosReservados());
+        Toast.makeText(getContext(),"Reserva registrada",Toast.LENGTH_SHORT).show();
+
+    }
+
+    public String articulosReservados(){
+        String articulosReservados = "";
+        for (int i =0; i< carrito.size(); i++){
+            Articulo aux = (Articulo) carrito.get(i);
+            articulosReservados = articulosReservados + aux.getArticuloId() + "&";
+        }
+        return articulosReservados;
+    }
+
+    public void guardarReservaEnPerfil(){
+
     }
 
 

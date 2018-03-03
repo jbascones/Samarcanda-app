@@ -49,7 +49,7 @@ dependencies {
     compile 'com.ramotion.expandingcollection:expanding-collection:0.9.0'//Expanding collection
     compile 'com.github.dmytrodanylyk:android-morphing-button:ceae91b84761ea5259406a473c77c7ab305a2f22'//Morphing button
     compile 'com.github.glomadrian:Grav:1.1' //Particulas
-    compile 'com.github.mjn1369:prettydialog:1.0.1'//Dialog ver ventas
+    compile 'com.github.mjn1369:prettydialog:1.0.1'//Dialog
     compile 'com.ftoslab:openweatherretrieverz:0.1.4'//Descargar parte metereologico
 
 
