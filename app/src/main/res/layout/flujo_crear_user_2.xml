@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.widget.RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.jorgebascones.samarcanda.MainActivity"
+    tools:showIn="@layout/flujo_crear_user_1">
+
+    <RelativeLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+        <TextView
+            android:id="@+id/titulo_samarcanda"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/textView3"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginBottom="50dp"
+            android:gravity="center_horizontal"
+            android:text="SAMARCANDA"
+            android:textColor="@color/blue_background"
+            android:textSize="40sp"
+            android:textStyle="bold" />
+
+
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="@string/bienvenida1"
+                android:background="#CCFAFAFA"
+                android:textColor="@color/blue_background"
+                android:textSize="30sp"
+                android:textStyle="bold"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
+
+            <Button
+                android:id="@+id/button4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="mostrarFlujo2"
+                android:text="Continuar"
+                android:theme="@style/ThemeOverlay.MyDarkButton"
+                android:layout_below="@+id/textView3"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
+
+
+
+    </RelativeLayout>
+
+
+
+</android.widget.RelativeLayout>

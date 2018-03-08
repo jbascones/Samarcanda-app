@@ -51,6 +51,8 @@ dependencies {
     compile 'com.github.glomadrian:Grav:1.1' //Particulas
     compile 'com.github.mjn1369:prettydialog:1.0.1'//Dialog
     compile 'com.ftoslab:openweatherretrieverz:0.1.4'//Descargar parte metereologico
+    compile 'com.github.GwonHyeok:StickySwitch:0.0.13'//Sticky switch
+    compile 'com.github.Kunzisoft:Android-SwitchDateTimePicker:1.6'//Date picker
 
 
     testCompile 'junit:junit:4.12'

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.widget.RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.jorgebascones.samarcanda.MainActivity"
+    tools:showIn="@layout/flujo_crear_user_1">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imagen_elegida"
+        android:layout_above="@+id/relative1"
+        android:layout_centerHorizontal="true"
+
+        />
+
+    <Button
+        android:id="@+id/bn_rotar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/imagen_elegida"
+        android:layout_toRightOf="@id/imagen_elegida"
+        android:onClick="rotarImagen"
+        android:text="Rotar" />
+
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:id="@+id/relative1"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:background="#CCFAFAFA">
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="Elige tu foto"
+            android:textColor="@color/blue_background"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_below="@+id/textView4"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+
+        <Button
+            android:id="@+id/bn_terminar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/recycler_view"
+            android:onClick="terminar"
+            android:text="Terminar"
+            android:theme="@style/ThemeOverlay.MyDarkButton"
+            android:visibility="invisible" />
+    </RelativeLayout>
+
+
+
+</android.widget.RelativeLayout>

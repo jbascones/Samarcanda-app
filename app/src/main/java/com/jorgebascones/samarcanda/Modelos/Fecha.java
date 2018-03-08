@@ -92,5 +92,16 @@ public class Fecha {
         return Integer.parseInt(str);
     }
 
+    public int getIntAnno(){
+        return StringToInt(getAnno(fecha));
+    }
+
+    public int getIntMes(){
+        return StringToInt(getMes(fecha));
+    }
+    public int getIntDia(){
+        return StringToInt(getDia(fecha));
+    }
+
 
 }

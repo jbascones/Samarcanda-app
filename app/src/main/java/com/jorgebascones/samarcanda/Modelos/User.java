@@ -20,6 +20,8 @@ public class User {
     public int numeroTelefono;
     public String mail;
     public String fechaNacimiento;
+    public int estatus;
+    public String genero;
 
 
 
@@ -81,6 +83,22 @@ public class User {
 
     public void setFechaNacimiento(String fechaNacimiento) {
         this.fechaNacimiento = fechaNacimiento;
+    }
+
+    public int getEstatus() {
+        return estatus;
+    }
+
+    public String getGenero() {
+        return genero;
+    }
+
+    public void setGenero(String genero) {
+        this.genero = genero;
+    }
+
+    public void setEstatus(int estatus) {
+        this.estatus = estatus;
     }
 
     public boolean rellenarPerfil(){

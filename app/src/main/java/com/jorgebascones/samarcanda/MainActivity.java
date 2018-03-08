@@ -3,9 +3,17 @@ package com.jorgebascones.samarcanda;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Matrix;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -20,7 +28,10 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -28,12 +39,33 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.gordonwong.materialsheetfab.MaterialSheetFab;
 import com.gordonwong.materialsheetfab.MaterialSheetFabEventListener;
+import com.jorgebascones.samarcanda.Modelos.Articulo;
+import com.jorgebascones.samarcanda.Modelos.Categoria;
+import com.jorgebascones.samarcanda.Modelos.Celda;
 import com.jorgebascones.samarcanda.Modelos.Comentario;
+import com.jorgebascones.samarcanda.Modelos.Fecha;
 import com.jorgebascones.samarcanda.Modelos.User;
+import com.kunzisoft.switchdatetime.SwitchDateTimeDialogFragment;
+import com.squareup.picasso.Picasso;
 import com.stephentuso.welcome.WelcomeActivity;
 import com.stephentuso.welcome.WelcomeHelper;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Locale;
+
+import io.ghyeok.stickyswitch.widget.StickySwitch;
 
 import static android.graphics.Color.WHITE;
 
@@ -63,6 +95,17 @@ public class MainActivity extends AppCompatActivity
     int counter;
 
     String fragmenActual;
+
+    //Variables para la creacion de nuevos users
+    private SwitchDateTimeDialogFragment dateTimeFragment;
+    RecyclerView recyclerView;
+    public ArrayList<Object> lista = new ArrayList<>();
+    ComplexRecyclerViewAdapter adapter;
+    private Uri filePath;
+    Bitmap bitmap;
+    StorageReference storageReference;
+    FirebaseStorage storage;
+    boolean subir;
 
 
     @Override
@@ -276,29 +319,8 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    //Listener de cuando acaba la pantalla de bienvenida
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
 
 
-        if (requestCode == WelcomeHelper.DEFAULT_WELCOME_SCREEN_REQUEST) {
-            // The key of the welcome screen is in the Intent
-            String welcomeKey = data.getStringExtra(WelcomeActivity.WELCOME_SCREEN_KEY);
-
-            if (resultCode == RESULT_OK) {
-                //Intent intent = new Intent(this, MainActivity.class);
-                //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                //startActivity(intent);
-            } else {
-                // Code here will run if the welcome screen was canceled
-                // In most cases you'll want to call finish() here
-            }
-
-        }
-
-    }
 /*
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -352,14 +374,19 @@ public class MainActivity extends AppCompatActivity
                 //User en la BBDD
                 if(miUsuario!=null){
                     Log.d(TAG, "User NO NULL");
-                    lanzarPrimeraPantalla();
+                    if(miUsuario.getEstatus()==1){
+                        lanzarPrimeraPantalla();
+                    } else if(miUsuario.getEstatus()==0){
+                        lanzarCreacionUser();
+                    }
+
                     Log.d(TAG,"bajar user(no null) quiere lanzar primera pantalla");
                 }
                 //User no en la BBDD
                 if(miUsuario==null){
                     Log.d(TAG, "User NULL");
                     crearUser();
-                    lanzarPrimeraPantalla();
+                    lanzarCreacionUser();
                     Log.d(TAG,"bajar user (null) quiere lanzar primera pantalla");
                     Log.d(TAG, "User null "+userId);
                 }
@@ -497,6 +524,335 @@ public class MainActivity extends AppCompatActivity
             }
 
         }
+
+        public void lanzarCreacionUser(){
+            setContentView(R.layout.flujo_crear_user_1);
+        }
+
+        public void mostrarFlujo2(View v){
+            View f1 = findViewById(R.id.flujo1);
+            f1.setVisibility(View.INVISIBLE);
+            View f2 = findViewById(R.id.flujo2);
+            f2.setVisibility(View.VISIBLE);
+            EditText editText = (EditText) findViewById(R.id.editText_nombre);
+            editText.setText(""+miUsuario.getNombre());
+
+        }
+
+        public void mostrarDatePicker(View v){
+
+        }
+
+    public void gestionarFragmentCalendario(View v){
+
+        //final TextView pruebaTV = (TextView) findViewById(R.id.pruebaCalendarioId);
+
+        // Construct SwitchDateTimePicker
+        dateTimeFragment = (SwitchDateTimeDialogFragment) getSupportFragmentManager().findFragmentByTag("TAG_DATETIME_FRAGMENT");
+        if(dateTimeFragment == null) {
+            dateTimeFragment = SwitchDateTimeDialogFragment.newInstance(
+                    getString(R.string.label_datetime_dialog),
+                    getString(R.string.positive_button_datetime_picker),
+                    getString(R.string.negative_button_datetime_picker)
+            );
+        }
+
+        // Assign values we want
+        final Fecha fecha = new Fecha();
+        final SimpleDateFormat myDateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", java.util.Locale.getDefault());
+        dateTimeFragment.startAtCalendarView();
+        dateTimeFragment.set24HoursMode(false);
+        dateTimeFragment.setMinimumDateTime(new GregorianCalendar(1900,1 ,1 ).getTime());
+        dateTimeFragment.setMaximumDateTime(new GregorianCalendar(fecha.getIntAnno(),fecha.getIntMes() ,fecha.getIntDia() ).getTime());
+        dateTimeFragment.setDefaultDateTime(new GregorianCalendar(fecha.getIntAnno(),fecha.getIntMes() -1 , fecha.getIntDia()).getTime());
+
+        // Define new day and month format
+        try {
+            dateTimeFragment.setSimpleDateMonthAndDayFormat(new SimpleDateFormat("MMMM dd", Locale.getDefault()));
+        } catch (SwitchDateTimeDialogFragment.SimpleDateMonthAndDayFormatException e) {
+            Log.e(TAG, e.getMessage());
+        }
+
+        // Set listener for date
+        dateTimeFragment.setOnButtonClickListener(new SwitchDateTimeDialogFragment.OnButtonClickListener() {
+            @Override
+            public void onPositiveButtonClick(Date date) {
+
+                TextView txt6 = (TextView) findViewById(R.id.textView6);
+                String fechaLeer = fecha.fechaPreparada(myDateFormat.format(date),false );
+                txt6.setText(fechaLeer);
+                Log.d("Calendario",myDateFormat.format(date));
+                Button button = (Button) findViewById(R.id.bn_continuar);
+                button.setVisibility(View.VISIBLE);
+
+            }
+
+            @Override
+            public void onNegativeButtonClick(Date date) {
+
+            }
+        });
+
+        Button buttonView = (Button) findViewById(R.id.bn_calendario);
+        buttonView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dateTimeFragment.show(getSupportFragmentManager(), "TAG_DATETIME_FRAGMENT");
+            }
+        });
+    }
+
+    public void lanzarElegirFoto(View v){
+        View v1 = findViewById(R.id.flujo2);
+        View v2 = findViewById(R.id.flujo3);
+        v1.setVisibility(View.INVISIBLE);
+        v2.setVisibility(View.VISIBLE);
+        prepararElegirFoto();
+        storage = FirebaseStorage.getInstance();
+        storageReference = storage.getReference();
+        setInfo();
+    }
+
+    public void prepararElegirFoto(){
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2, GridLayoutManager.VERTICAL, false));
+        rellenarLista();
+        subir = false;
+        visibilityRotar(false);
+    }
+
+
+    private void bindDataToAdapter() {
+
+        final ImageView imagenElegida = (ImageView) findViewById(R.id.imagen_elegida);
+
+        // Bind adapter to recycler view object
+
+        adapter = new ComplexRecyclerViewAdapter(lista);
+
+        adapter.setOnItemClickListener(new ComplexRecyclerViewAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Celda cElegida = (Celda) lista.get(position);
+                if(cElegida.getTipo().equals("Elegir foto galeria")){
+                    chooseImage();
+                    subir = true;
+                    visibilityRotar(true);
+                    visibilityTerminar();
+                }else{
+                    Picasso.with(getApplicationContext()).load(cElegida.getFotoUrl()).resize(600,600).into(imagenElegida);
+                    miUsuario.setUrlFoto(cElegida.getFotoUrl());
+                    subir = false;
+                    visibilityRotar(false);
+                    visibilityTerminar();
+                }
+            }
+        });
+
+        recyclerView.setAdapter(adapter);
+
+
+    }
+
+    public void rellenarLista(){
+        Celda galeria = new Celda("Elegir foto galeria");
+        galeria.setTexto("Elegir foto de la galería");
+        Celda google = new Celda("Elegir Foto");
+        google.setTexto("Foto de perfil de Google");
+        google.setFotoUrl(miUsuario.getUrlFoto());
+        lista.add(galeria);
+        lista.add(google);
+        descargarListaFotos();
+    }
+
+    public void descargarListaFotos(){
+
+        // Read from the database
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+        DatabaseReference myRef = database.getReference("/Valores/fotos");
+
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                for (DataSnapshot childDataSnapshot : dataSnapshot.getChildren()) {
+                    Log.v(TAG,""+ childDataSnapshot.getKey()); //displays the key for the node
+                    Log.v(TAG,""+ childDataSnapshot.getValue());
+                    addUrlFoto(childDataSnapshot.getValue(String.class));
+
+                }
+                bindDataToAdapter();
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                System.out.println("Failed to read value." + error.toException());
+            }
+        });
+    }
+
+    public void addUrlFoto(String newValue){
+        try {
+            boolean add = true;
+
+            for (int i=1; i<lista.size(); i++){
+                Celda c = (Celda) lista.get(i);
+                if(c.getFotoUrl().equals(newValue)){
+                    add = false;
+                }
+            }
+
+            if(add){
+                Celda newCelda = new Celda("Elegir Foto");
+                newCelda.setFotoUrl(newValue);
+                int numero = lista.size() -1;
+                newCelda.setTexto("Icono "+ numero);
+                lista.add(newCelda);
+            }
+        }catch (Exception e){
+
+        }
+
+    }
+
+    private void chooseImage() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), 71);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 71 && resultCode == RESULT_OK
+                && data != null && data.getData() != null )
+        {
+            filePath = data.getData();
+            try {
+                ImageView imageView = (ImageView) findViewById(R.id.imagen_elegida);
+                bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), filePath);
+                int w = bitmap.getWidth();
+                double escalado = w/600;
+                int h = bitmap.getHeight();
+                double newH =h/escalado;
+                int hDef = (int) newH;
+                bitmap = Bitmap.createScaledBitmap(bitmap,600, hDef, false);
+                imageView.setImageBitmap(bitmap);
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void uploadImage() {
+
+
+        if(filePath != null)
+        {
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            byte[] data = baos.toByteArray();
+
+
+            //StorageReference ref = storageReference.child("images/"+ UUID.randomUUID().toString());
+            String ruta = miUsuario.getUsuarioId();
+            StorageReference ref = storageReference.child("fotos_perfil/"+ ruta);
+            ref.putBytes(data)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            //progressDialog.dismiss();
+                            //Toast.makeText(this, "Uploaded", Toast.LENGTH_SHORT).show();
+                            Log.d("SubirPost","Uploaded");
+                            @SuppressWarnings("VisibleForTests") Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                            miUsuario.setUrlFoto(downloadUrl.toString());
+                            lanzarPrimeraPantalla();
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            //progressDialog.dismiss();
+                            //Toast.makeText(this, "Failed "+e.getMessage(), Toast.LENGTH_SHORT).show();
+                            Log.d("SubirPost","Failed"+e.getMessage());
+                        }
+                    })
+                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                            //double progress = (100.0*taskSnapshot.getBytesTransferred()/taskSnapshot
+                            //        .getTotalByteCount());
+                            //progressDialog.setMessage("Uploaded "+(int)progress+"%");
+                        }
+                    });
+        }
+    }
+
+    public void rotarImagen(View v){
+        Matrix matrix = new Matrix();
+        matrix.postRotate(-90); // anti-clockwise by 90 degrees
+        bitmap = Bitmap.createBitmap(bitmap , 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix,true);
+        ImageView imagenElegida = (ImageView) findViewById(R.id.imagen_elegida);
+        imagenElegida.setImageBitmap(bitmap);
+
+    }
+
+    public void visibilityRotar(boolean visible){
+        try{
+            Button button = (Button) findViewById(R.id.bn_rotar);
+            if(visible){
+                button.setVisibility(View.VISIBLE);
+            }else{
+                button.setVisibility(View.INVISIBLE);
+            }
+        }catch (Exception e){
+
+        }
+
+    }
+
+    public void terminar(View v){
+        setContentView(R.layout.activity_loading);
+        if(subir){
+            uploadImage();
+        }else{
+
+            lanzarPrimeraPantalla();
+        }
+        subirAFirebase(miUsuario,"/users/perfiles/"+miUsuario.getUsuarioId());
+    }
+
+    public void visibilityTerminar(){
+        Button botonContinuar = (Button) findViewById(R.id.bn_terminar);
+        botonContinuar.setVisibility(View.VISIBLE);
+    }
+
+    public void setInfo(){
+        EditText editText = (EditText) findViewById(R.id.editText_nombre);
+        miUsuario.setNombre(editText.getText().toString());
+        StickySwitch stickySwitch = (StickySwitch) findViewById(R.id.sticky_switch);
+        StickySwitch.Direction d = stickySwitch.getDirection();
+        if(d == StickySwitch.Direction.LEFT){
+            miUsuario.setGenero("masculino");
+        }else{
+            miUsuario.setGenero("femenino");
+        }
+        TextView textView = (TextView) findViewById(R.id.textView6);
+        miUsuario.setFechaNacimiento(textView.getText().toString());
+        miUsuario.setEstatus(1);
+    }
+
 
 
 

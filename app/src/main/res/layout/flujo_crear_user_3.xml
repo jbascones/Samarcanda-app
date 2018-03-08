@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.widget.RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.jorgebascones.samarcanda.MainActivity"
+    tools:showIn="@layout/flujo_crear_user_1">
+
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:background="#CCFAFAFA">
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="¿Cómo te llamas?"
+            android:textColor="@color/blue_background"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/editText_nombre"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:gravity="center"
+            android:layout_below="@id/textView4"
+            android:inputType="textPersonName"
+            android:text="Name" />
+
+        <io.ghyeok.stickyswitch.widget.StickySwitch
+            android:id="@+id/sticky_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            app:ss_animationDuration="600"
+            app:ss_animationType="line"
+            app:ss_iconPadding="18dp"
+            app:ss_iconSize="22dp"
+            app:ss_leftIcon="@drawable/ic_male"
+            app:ss_leftText="Hombre"
+            app:ss_rightIcon="@drawable/ic_female"
+            app:ss_rightText="Mujer"
+            app:ss_selectedTextSize="14sp"
+            app:ss_sliderBackgroundColor="@color/colorPrimary"
+            app:ss_switchColor="@color/colorAccent"
+            app:ss_textColor="@color/colorPrimary"
+            app:ss_textSize="12sp"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/editText_nombre"/>
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/sticky_switch"
+            android:gravity="center_horizontal"
+            android:text="¿Cuándo naciste?"
+            android:textColor="@color/blue_background"
+            android:textSize="30sp"
+            android:paddingTop="30dp"
+            android:textStyle="bold" />
+        <Button
+            android:id="@+id/bn_calendario"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="gestionarFragmentCalendario"
+            android:text="Ver calendario"
+            android:theme="@style/ThemeOverlay.MyDarkButton"
+            android:gravity="center_horizontal"
+            android:layout_below="@+id/textView5"
+            android:layout_centerHorizontal="true" />
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/bn_calendario"
+            android:gravity="center_horizontal"
+            android:text=""
+            android:textColor="@color/blue_background"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/bn_continuar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/textView6"
+            android:onClick="lanzarElegirFoto"
+            android:text="Continuar"
+            android:visibility="visible"
+            android:theme="@style/ThemeOverlay.MyDarkButton" />
+    </RelativeLayout>
+
+
+
+</android.widget.RelativeLayout>

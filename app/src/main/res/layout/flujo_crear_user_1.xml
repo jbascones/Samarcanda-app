@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.jorgebascones.samarcanda.MainActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+
+    </android.support.design.widget.AppBarLayout>
+
+    <com.github.glomadrian.grav.GravView
+        android:id="@+id/grav"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:regular_cell_size="400"
+        app:regular_variance="400"
+        app:pointGenerator="com.github.glomadrian.grav.generator.point.RegularPointGenerator"
+        app:gravGenerator="com.github.glomadrian.grav.generator.grav.BallGenerator"
+        app:ball_from_size="3dp"
+        app:ball_to_size="16dp"
+        app:colorGenerator="com.github.glomadrian.grav.generator.paint.ArrayColorGenerator"
+        app:array_colors="@array/bubble"
+        app:animationGenerator="com.github.glomadrian.grav.generator.animation.SideToSideAnimator"
+        app:side_to_side_min_duration="7000"
+        app:side_to_side_max_duration="14000"
+        app:side_to_side_direction="downToUp"
+        />
+
+    <include
+        layout="@layout/flujo_crear_user_2"
+        android:id="@+id/flujo1"
+        android:visibility="visible">
+
+    </include>
+
+    <include
+        layout="@layout/flujo_crear_user_3"
+        android:id="@+id/flujo2"
+        android:visibility="invisible">
+
+    </include>
+
+    <include
+        layout="@layout/flujo_crear_user_4"
+        android:id="@+id/flujo3"
+        android:visibility="invisible">
+
+    </include>
+
+</android.support.design.widget.CoordinatorLayout>
