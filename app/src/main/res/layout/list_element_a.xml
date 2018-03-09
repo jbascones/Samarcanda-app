@@ -21,7 +21,7 @@
         android:layout_alignTop="@id/id_element_icon_a"
         android:layout_toEndOf="@id/id_element_icon_a"
         android:layout_toRightOf="@id/id_element_icon_a"
-        android:text="Cliente/Articulo"
+        android:text="Articulo"
         android:textAppearance="@style/cardItemPersonName" />
 
     <TextView
@@ -37,24 +37,40 @@
         android:textAppearance="@android:style/TextAppearance.Holo"
         android:layout_toLeftOf="@+id/id_cancelar_articulo"
         android:layout_toStartOf="@+id/id_cancelar_articulo" />
+    <TextView
+        android:id="@+id/id_element_precio"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/id_element_id_a"
+        android:layout_alignStart="@id/id_element_id_a"
+        android:layout_below="@id/id_element_nombre_a"
+        android:layout_marginTop="5dp"
+        android:layout_toRightOf="@id/id_element_icon_a"
+        android:text="Precio"
+        android:textAppearance="@android:style/TextAppearance.Holo"
+        android:layout_toLeftOf="@+id/id_cancelar_articulo"
+        android:layout_toStartOf="@+id/id_cancelar_articulo" />
 
     <TextView
-        android:id="@+id/firstLineDate_a"
+        android:id="@+id/id_unidades"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
+        android:text="Unidades"
         android:layout_alignParentRight="true"
         android:layout_alignTop="@id/id_element_id_a"
         android:textColor="@color/bgGradientStart" />
+
     <Button
         android:id="@+id/id_cancelar_articulo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/firstLineDate_a"
-        android:background="@color/mb_red"
-        android:onClick="cancelarArticulo"
-        android:text="Cancelar" />
+        android:layout_below="@+id/id_unidades"
+        android:onClick="modificarArticulo"
+        android:text="Modificar"
+        android:theme="@style/ThemeOverlay.MyDarkButton"/>
+
 
 </RelativeLayout>

@@ -175,8 +175,11 @@ public class ComplexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     private void configureViewHolderVentaArticulos(ViewHolderVentaArticulos vh4, int position) {
         CarritoItem c = (CarritoItem) items.get(position);
         Articulo a = c.getCarritoItem();
-        vh4.getLabel1().setText("Articulo");
-        vh4.getLabel2().setText(a.getNombre());
+        vh4.getLabel1().setText(a.getNombre());
+        vh4.getLabel2().setText(a.getPrecio()+"€");
+        vh4.getLabel3().setText(c.getUnidades()+" unidades");
+        vh4.getLabel4().setText("");
+        vh4.getButton().setVisibility(View.INVISIBLE);
         Context context = vh4.getLabel1().getContext();
 
         Picasso.with(context).load(a.getFotoUrl()).into(vh4.getImageView());

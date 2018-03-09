@@ -33,8 +33,12 @@ import com.jorgebascones.samarcanda.Modelos.User;
 import com.jorgebascones.samarcanda.Modelos.Venta;
 import com.squareup.picasso.Picasso;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 
+import libs.mjn.prettydialog.PrettyDialog;
+import libs.mjn.prettydialog.PrettyDialogCallback;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 
@@ -109,7 +113,7 @@ public class LectorQRActivity extends AppCompatActivity implements ZXingScannerV
     }
 
     //TODO: arreglar el tema de cancelar articulos
-    public void cancelarArticulo(View v){
+    public void cancelarArticulo(){
         listaValores.remove(listaValores.size()-1);
 
         gestionElements();
@@ -206,6 +210,10 @@ public class LectorQRActivity extends AppCompatActivity implements ZXingScannerV
                 id.setText("Artículo");
                 TextView nombre = (TextView) findViewById(R.id.id_element_nombre_a);
                 nombre.setText(articuloActual.getNombre());
+                TextView unidades = (TextView) findViewById(R.id.id_unidades);
+                unidades.setText("x"+carritoItem.getUnidades());
+                TextView precio = (TextView) findViewById(R.id.id_element_precio);
+                precio.setText(carritoItem.getCarritoItem().getPrecio()+"€");
                 ImageView icon = (ImageView) findViewById(R.id.id_element_icon_a);
                 Context c = getApplicationContext();
                 Picasso.with(c).load(articuloActual.getFotoUrl()).into(icon);
@@ -283,8 +291,7 @@ public class LectorQRActivity extends AppCompatActivity implements ZXingScannerV
                 if(articulo!=null){
                     Log.d(TAG, "Articulo NO NULL");
                     venta.addNumeroArticulos();
-                    CarritoItem carritoItem = new CarritoItem(articulo);
-                    listaValores.add(carritoItem);
+                    addArticulo(articulo);
                     gestionElements();
                     Log.d(TAG,"Nombre del articulo "+articulo.getNombre());
                     Log.d(TAG,"Articulos en carrito "+listaValores.size());
@@ -416,6 +423,121 @@ public class LectorQRActivity extends AppCompatActivity implements ZXingScannerV
             precio = precio + aux.getCarritoItem().getPrecio();
         }
         return precio;
+    }
+
+    //Al añadir un articulo, si ya estaba en la lista aumenta una unidad del objeto CarritoItem. Si no estaba, lo añade
+    public void addArticulo(Articulo articulo){
+
+        if(listaValores.size()==0){
+            CarritoItem carritoItem = new CarritoItem(articulo);
+            listaValores.add(carritoItem);
+        }else{
+            for(int i=0;i<listaValores.size();i++){
+                CarritoItem aux = (CarritoItem) listaValores.get(i);
+                if(aux.getCarritoItem().getArticuloId().equals(articulo.getArticuloId())){
+                    aux.addUnidad();
+                    listaValores.remove(i);
+                    listaValores.add(i,aux);
+                }else{
+                    CarritoItem carritoItem = new CarritoItem(articulo);
+                    listaValores.add(carritoItem);
+                }
+            }
+        }
+
+    }
+
+    public void restaArticulo(Articulo articulo){
+
+        for(int i=0;i<listaValores.size();i++){
+            CarritoItem aux = (CarritoItem) listaValores.get(i);
+            if(aux.getCarritoItem().getArticuloId().equals(articulo.getArticuloId())){
+                aux.restaUnidad();
+                listaValores.remove(i);
+                if(aux.getUnidades()>0){
+                    listaValores.add(i,aux);
+                }
+
+                }else{
+
+                }
+            }
+
+
+    }
+
+    public void modificarArticulo(View v){
+
+        CarritoItem carritoItem = (CarritoItem) listaValores.get(listaValores.size()-1);
+
+        dialogModificar(carritoItem);
+    }
+
+    public void dialogModificar(final CarritoItem carritoItem){
+        View view = findViewById(R.id.id_unidades);
+        final PrettyDialog dialog = new PrettyDialog(view.getContext());
+        dialog
+                .setTitle("¿Qué deseas modificar?")
+                .setMessage(carritoItem.getUnidades()+" unidades")
+                .addButton(
+                        "\nAñadir unidad\n",					// button text
+                        R.color.pdlg_color_white,		// button text color
+                        R.color.pdlg_color_green,		// button background color
+                        new PrettyDialogCallback() {		// button OnClick listener
+                            @Override
+                            public void onClick() {
+                                addArticulo(carritoItem.getCarritoItem());
+                                dialogModificar(carritoItem);
+                                gestionElements();
+                                venta.addNumeroArticulos();
+                                setTextoCarrito();
+                                dialog.dismiss();
+                            }
+                        }
+                )
+
+                // Cancel button
+                .addButton(
+                        "\nRestar unidad\n",
+                        R.color.pdlg_color_white,
+                        R.color.pdlg_color_red,
+                        new PrettyDialogCallback() {
+                            @Override
+                            public void onClick() {
+                                restaArticulo(carritoItem.getCarritoItem());
+                                if(listaValores.size()>0){
+                                    dialogModificar(carritoItem);
+                                }else{
+                                    Button button = (Button) findViewById(R.id.id_bn_siguiente_articulo);
+                                    button.setVisibility(View.INVISIBLE);
+                                }
+                                venta.restaNumeroArticulos();
+                                gestionElements();
+                                setTextoCarrito();
+                                dialog.dismiss();
+                            }
+                        }
+                )
+
+                // 3rd button
+                .addButton(
+                        "\nBorrar artículo\n",
+                        R.color.pdlg_color_black,
+                        R.color.pdlg_color_gray,
+                        new PrettyDialogCallback() {
+                            @Override
+                            public void onClick() {
+                                cancelarArticulo();
+                                Button button = (Button) findViewById(R.id.id_bn_siguiente_articulo);
+                                button.setVisibility(View.INVISIBLE);
+                                venta.setNumeroArticulos(0);
+                                setTextoCarrito();
+                                dialog.dismiss();
+                            }
+                        }
+                )
+                .setAnimationEnabled(false)
+                .show();
     }
 
 

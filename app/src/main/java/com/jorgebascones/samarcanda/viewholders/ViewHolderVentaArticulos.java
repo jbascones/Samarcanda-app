@@ -2,6 +2,7 @@ package com.jorgebascones.samarcanda.viewholders;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -21,14 +22,18 @@ import libs.mjn.prettydialog.PrettyDialogCallback;
 
 public class ViewHolderVentaArticulos extends RecyclerView.ViewHolder {
 
-    private TextView label1, label2;
+    private TextView label1, label2, label3, label4;
     private ImageView imageView;
+    private Button button;
 
     public ViewHolderVentaArticulos(View v) {
         super(v);
         imageView = (ImageView) v.findViewById(R.id.id_element_icon_a);
         label1 = (TextView) v.findViewById(R.id.id_element_id_a);
         label2 = (TextView) v.findViewById(R.id.id_element_nombre_a);
+        label3 = (TextView) v.findViewById(R.id.id_element_precio);
+        label4 = (TextView) v.findViewById(R.id.id_unidades);
+        button = (Button) v.findViewById(R.id.id_cancelar_articulo);
 
     }
 
@@ -54,5 +59,29 @@ public class ViewHolderVentaArticulos extends RecyclerView.ViewHolder {
 
     public void setImageView(ImageView imageView) {
         this.imageView = imageView;
+    }
+
+    public TextView getLabel3() {
+        return label3;
+    }
+
+    public void setLabel3(TextView label3) {
+        this.label3 = label3;
+    }
+
+    public TextView getLabel4() {
+        return label4;
+    }
+
+    public void setLabel4(TextView label4) {
+        this.label4 = label4;
+    }
+
+    public Button getButton() {
+        return button;
+    }
+
+    public void setButton(Button button) {
+        this.button = button;
     }
 }

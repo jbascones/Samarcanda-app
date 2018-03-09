@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -12,7 +14,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -29,6 +30,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -45,33 +47,32 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.gordonwong.materialsheetfab.MaterialSheetFab;
 import com.gordonwong.materialsheetfab.MaterialSheetFabEventListener;
-import com.jorgebascones.samarcanda.Modelos.Articulo;
-import com.jorgebascones.samarcanda.Modelos.Categoria;
+import com.jorgebascones.samarcanda.Modelos.CarritoItem;
 import com.jorgebascones.samarcanda.Modelos.Celda;
 import com.jorgebascones.samarcanda.Modelos.Comentario;
 import com.jorgebascones.samarcanda.Modelos.Fecha;
 import com.jorgebascones.samarcanda.Modelos.User;
 import com.kunzisoft.switchdatetime.SwitchDateTimeDialogFragment;
 import com.squareup.picasso.Picasso;
-import com.stephentuso.welcome.WelcomeActivity;
 import com.stephentuso.welcome.WelcomeHelper;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
 import io.ghyeok.stickyswitch.widget.StickySwitch;
+import libs.mjn.prettydialog.PrettyDialog;
+import libs.mjn.prettydialog.PrettyDialogCallback;
 
 import static android.graphics.Color.WHITE;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-        TarjetaFragment.OnFragmentInteractionListener{
+        MiPerfilFragment.OnFragmentInteractionListener{
 
 
 
@@ -120,8 +121,17 @@ public class MainActivity extends AppCompatActivity
 
         fragmenActual = "inicial";
 
+        isOnline();
 
 
+
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();  // Always call the superclass method first
+        isOnline();
     }
 
     public void lanzarPrimeraPantalla(){
@@ -258,7 +268,7 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.tarjeta_drawer) {
 
-            TarjetaFragment tarjetaFragment = TarjetaFragment.newInstance(miUsuario.getNombre(),miUsuario.getUsuarioId(),miUsuario.getUrlFoto());
+            MiPerfilFragment tarjetaFragment = MiPerfilFragment.newInstance(miUsuario.getNombre(),miUsuario.getUsuarioId(),miUsuario.getUrlFoto());
 
             FragmentManager manager = getSupportFragmentManager();
 
@@ -851,6 +861,54 @@ public class MainActivity extends AppCompatActivity
         TextView textView = (TextView) findViewById(R.id.textView6);
         miUsuario.setFechaNacimiento(textView.getText().toString());
         miUsuario.setEstatus(1);
+    }
+
+    public boolean isOnline() {
+        ConnectivityManager conMgr = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = conMgr.getActiveNetworkInfo();
+
+        if(netInfo == null || !netInfo.isConnected() || !netInfo.isAvailable()){
+            Toast.makeText(getApplicationContext(), "No hay conexión a Internet", Toast.LENGTH_LONG).show();
+            dialogModificar();
+            return false;
+        }
+        return true;
+    }
+
+    public void dialogModificar(){
+        View view = findViewById(R.id.id_unidades);
+        final PrettyDialog dialog = new PrettyDialog(view.getContext());
+        dialog
+                .setTitle("¡¡Sin conexión!!")
+                .setMessage("Revisa tu red")
+                .addButton(
+                        "Reintentar",					// button text
+                        R.color.pdlg_color_white,		// button text color
+                        R.color.pdlg_color_green,		// button background color
+                        new PrettyDialogCallback() {		// button OnClick listener
+                            @Override
+                            public void onClick() {
+                              isOnline();
+                            }
+                        }
+                )
+
+                // Cancel button
+                .addButton(
+                        "Cerrar la app",
+                        R.color.pdlg_color_white,
+                        R.color.pdlg_color_red,
+                        new PrettyDialogCallback() {
+                            @Override
+                            public void onClick() {
+                                finish();
+                            }
+                        }
+                )
+
+
+                .setAnimationEnabled(false)
+                .show();
     }
 
 

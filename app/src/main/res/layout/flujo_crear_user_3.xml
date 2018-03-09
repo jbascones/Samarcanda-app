@@ -100,7 +100,7 @@
             android:layout_below="@+id/textView6"
             android:onClick="lanzarElegirFoto"
             android:text="Continuar"
-            android:visibility="visible"
+            android:visibility="invisible"
             android:theme="@style/ThemeOverlay.MyDarkButton" />
     </RelativeLayout>
 

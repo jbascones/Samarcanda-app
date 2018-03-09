@@ -82,6 +82,8 @@ public class Venta {
         numeroArticulos++;
     }
 
+    public void restaNumeroArticulos(){numeroArticulos--; }
+
     public void setEdadVenta(int edadVenta) {
         this.edadVenta = edadVenta;
     }

@@ -35,7 +35,8 @@ public class Fecha {
     }
 
     public String getDia(String fecha){
-        return fecha.substring(8,10);
+        String fechaCorregida = fecha +"  ";
+        return fechaCorregida.substring(8,10);
     }
 
     public String getHora(String fecha){
