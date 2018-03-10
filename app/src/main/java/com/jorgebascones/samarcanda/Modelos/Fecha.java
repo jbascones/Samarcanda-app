@@ -1,8 +1,12 @@
 package com.jorgebascones.samarcanda.Modelos;
 
+import android.util.Log;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Created by jorgebascones on 10/2/18.
@@ -35,8 +39,8 @@ public class Fecha {
     }
 
     public String getDia(String fecha){
-        String fechaCorregida = fecha +"  ";
-        return fechaCorregida.substring(8,10);
+
+        return fecha.substring(8,10);
     }
 
     public String getHora(String fecha){
@@ -51,8 +55,14 @@ public class Fecha {
             sHora = getHora(fecha);
         }
 
+        String dia = getDia(fecha);
 
-        return getDia(fecha)+"/"+getMes(fecha)+"/"+getAnno(fecha)+" "+ sHora;
+        if(dia.length()==1){
+            dia = "0"+dia;
+        }
+
+
+        return dia+"/"+getMes(fecha)+"/"+getAnno(fecha)+" "+ sHora;
     }
 
     public String getRutaVenta(){
@@ -62,6 +72,10 @@ public class Fecha {
         String anno = getAnno(fecha);
 
         String dia = getDia(fecha);
+
+        if(dia.length()==1){
+            dia = "0"+dia;
+        }
 
         String ruta = anno + "/" + mes + "/" + dia;
 
@@ -75,7 +89,18 @@ public class Fecha {
 
         int dia =  StringToInt(getDia(fecha)) + dias;
 
-        String ruta = anno + "/" + mes + "/" + dia;
+        String diaStr = ""+dia;
+
+        if (diaStr.length()==1){
+            diaStr = "0"+diaStr;
+        }
+
+        String [] datos = {diaStr,mes,anno};
+
+        datos = verificar(datos);
+
+
+        String ruta = datos[2] + "/" + datos[1] + "/" + datos[0];
 
         return ruta;
     }
@@ -102,6 +127,50 @@ public class Fecha {
     }
     public int getIntDia(){
         return StringToInt(getDia(fecha));
+    }
+
+    public String [] verificar(String [] datos){
+        //Si llego al dia 0, paso al mes anterior
+        if(datos[0].equals("00")){
+            //Paso al mes anterior
+            String newMes = ""+(StringToInt(datos[1])-1);
+
+            //Si el mes tiene menos de 1 digito, le añado un 0
+            if(newMes.length()==1){
+                newMes = "0"+newMes;
+            }
+            //Si llego al mes 0, paso al 31 de diciembre del año anterior
+             else if(newMes.equals("00")){
+                newMes = "12";
+                datos[2] = ""+(StringToInt(datos[2])-1);
+            }
+
+            //Paso al ultimo dia del mes anterior
+            datos[0] = getDiaMesAnterior(newMes);
+
+            datos[1] = newMes;
+        }
+
+        return datos;
+    }
+
+    public String getDiaMesAnterior(String mes){
+        Map<String,String> diccionario = new HashMap<>();
+        diccionario.put("01","31"); //Enero
+        diccionario.put("02","28"); //Febrero
+        diccionario.put("03","31"); //Marzo
+        diccionario.put("04","30"); //Abril
+        diccionario.put("05","31"); //Mayo
+        diccionario.put("06","30"); //Junio
+        diccionario.put("07","31"); //Julio
+        diccionario.put("08","31"); //Agosto
+        diccionario.put("09","30"); //Septiembre
+        diccionario.put("10","31"); //Octubre
+        diccionario.put("11","30"); //Noviembre
+        diccionario.put("12","31"); //Diciembre
+
+        return diccionario.get(mes);
+
     }
 
 
