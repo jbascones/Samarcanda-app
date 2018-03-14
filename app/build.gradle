@@ -53,6 +53,10 @@ dependencies {
     compile 'com.ftoslab:openweatherretrieverz:0.1.4'//Descargar parte metereologico
     compile 'com.github.GwonHyeok:StickySwitch:0.0.13'//Sticky switch
     compile 'com.github.Kunzisoft:Android-SwitchDateTimePicker:1.6'//Date picker
+    compile 'com.stripe:stripe-android:4.1.6'//Pago con Stripe
+    compile 'com.android.volley:volley:1.0.0'//Volley: http
+    compile 'co.lujun:popmenulayout:0.9.3'//Menu desplegable
+
 
 
     testCompile 'junit:junit:4.12'

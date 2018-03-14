@@ -20,19 +20,6 @@
             android:icon="@mipmap/ic_tarjeta"
             android:title="Mi Perfil" />
     </group>
-
-    <item android:title="Gestion">
-        <menu>
-            <item
-                android:id="@+id/venta_drawer"
-                android:icon="@drawable/ic_menu_slideshow"
-                android:title="Realizar Venta" />
-
-            <item
-                android:id="@+id/nav_send"
-                android:icon="@drawable/ic_menu_send"
-                android:title="Subir Post" />
-        </menu>
-    </item>
+    
 
 </menu>

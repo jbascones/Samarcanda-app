@@ -20,7 +20,7 @@
             android:layout_width="200dp"
             android:layout_height="200dp"
             android:contentDescription="@string/desc_firebase_lockup"
-            android:src="@mipmap/firebase_lockup_400" />
+            android:src="@drawable/inicio" />
 
         <TextView
             android:id="@+id/title_text"

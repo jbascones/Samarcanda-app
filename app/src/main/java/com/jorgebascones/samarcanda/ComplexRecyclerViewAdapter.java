@@ -12,11 +12,13 @@ import com.jorgebascones.samarcanda.Modelos.CarritoItem;
 import com.jorgebascones.samarcanda.Modelos.Categoria;
 import com.jorgebascones.samarcanda.Modelos.Celda;
 import com.jorgebascones.samarcanda.Modelos.Fecha;
+import com.jorgebascones.samarcanda.Modelos.Reserva;
 import com.jorgebascones.samarcanda.Modelos.Tiempo;
 import com.jorgebascones.samarcanda.Modelos.Venta;
 import com.jorgebascones.samarcanda.viewholders.ViewHolderArticulo;
 import com.jorgebascones.samarcanda.viewholders.ViewHolderCategoria;
 import com.jorgebascones.samarcanda.viewholders.ViewHolderDataNull;
+import com.jorgebascones.samarcanda.viewholders.ViewHolderReserva;
 import com.jorgebascones.samarcanda.viewholders.ViewHolderTiempo;
 import com.jorgebascones.samarcanda.viewholders.ViewHolderVenta;
 import com.jorgebascones.samarcanda.viewholders.ViewHolderVentaArticulos;
@@ -53,7 +55,7 @@ public class ComplexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     }
 
 
-    private final int VENTA = 0, NULL = 1, TIEMPO = 2, CARRITO = 3, CATEGORIA = 4, ARTICULO=5, CELDA= 6;
+    private final int VENTA = 0, NULL = 1, TIEMPO = 2, CARRITO = 3, CATEGORIA = 4, ARTICULO=5, CELDA= 6, RESERVA = 7;
 
     // Provide a suitable constructor (depends on the kind of dataset)
     public ComplexRecyclerViewAdapter(ArrayList<Object> items) {
@@ -84,6 +86,8 @@ public class ComplexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             return ARTICULO;
         }else if (items.get(position) instanceof Celda) {
             return CELDA;
+        }else if (items.get(position) instanceof Reserva) {
+            return RESERVA;
         }
         return -1;
     }
@@ -135,6 +139,10 @@ public class ComplexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             case CELDA:
                 View v7 = inflater.inflate(R.layout.viewholder_articulo, viewGroup, false);
                 viewHolder = new ViewHolderArticulo(v7, listener);
+                break;
+            case RESERVA:
+                View v8 = inflater.inflate(R.layout.viewholder_reserva, viewGroup, false);
+                viewHolder = new ViewHolderReserva(v8, listener);
                 break;
             default:
                 v1 = inflater.inflate(R.layout.viewholder_venta, viewGroup, false);
@@ -218,8 +226,16 @@ public class ComplexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         }else{
             Picasso.with(context).load(c.getFotoUrl()).resize(600,600).into(vh7.getIcono());
         }
+    }
 
-
+    private void configureViewHolderReserva(ViewHolderReserva vh8, int position) {
+        Reserva reserva = (Reserva) items.get(position);
+        if (reserva != null) {
+            vh8.getLabel1().setText(reserva.getTextoArticulos());
+            vh8.getLabel2().setText("Estado: "+reserva.getEstado());
+            //Fecha fecha = new Fecha();
+            vh8.getLabel3().setText(reserva.getUserName());
+        }
     }
 
     /**
@@ -260,6 +276,10 @@ public class ComplexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             case CELDA:
                 ViewHolderArticulo vh7 = (ViewHolderArticulo) viewHolder;
                 configureViewHolderCelda(vh7, position);
+                break;
+            case RESERVA:
+                ViewHolderReserva vh8 = (ViewHolderReserva) viewHolder;
+                configureViewHolderReserva(vh8, position);
                 break;
             default:
                 vh1 = (ViewHolderVenta) viewHolder;
@@ -302,10 +322,6 @@ public class ComplexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                 break;
 
         }
-    }
-
-    public void nuevoItem(int posicion){
-        notifyItemInserted(posicion);
     }
 
     public void swap(ArrayList<Object> nuevaLista){

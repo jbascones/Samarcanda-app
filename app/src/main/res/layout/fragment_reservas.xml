@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/popMenuLayout"
+        android:layout_alignParentTop="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    <co.lujun.popmenulayout.PopMenuLayout
+        android:id="@+id/popMenuLayout"
+        android:layout_width="match_parent"
+        android:layout_height="85sp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        app:child_menu_max_count="5"
+        app:cmenu_layout_bg_color="#ffd389"
+        app:cmenu_w_follow_level1_menu="false"
+        app:level1_menu_layout_bg_color="@color/colorAccent"
+        app:menu_bottom_padding="5dp"
+        app:menu_divider_color="@color/pdlg_color_black"
+        app:menu_divider_width="2dp"
+        app:menu_left_padding="5dp"
+        app:menu_right_padding="5dp"
+        app:menu_text_color="@color/pdlg_color_black"
+        app:menu_text_size="20sp"
+        app:menu_top_padding="5dp" />
+
+
+</RelativeLayout>

@@ -29,6 +29,7 @@ import com.ftoslab.openweatherretrieverz.WeatherCallback;
 import com.ftoslab.openweatherretrieverz.WeatherUnitConverter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -37,6 +38,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.jorgebascones.samarcanda.Modelos.Articulo;
 import com.jorgebascones.samarcanda.Modelos.Categoria;
 import com.jorgebascones.samarcanda.Modelos.Fecha;
+import com.jorgebascones.samarcanda.Modelos.Reserva;
 import com.jorgebascones.samarcanda.Modelos.Tiempo;
 import com.jorgebascones.samarcanda.Modelos.Venta;
 import com.squareup.picasso.Picasso;
@@ -117,6 +119,10 @@ public class CatalogoFragment extends Fragment {
 
         setClickBotonAtras(view);
         setListenerBotonCarrito();
+        Fecha fecha = new Fecha();
+        fecha.setFecha(fecha.sumarDias(fecha.getFecha(),1));
+        String ruta = fecha.getRutaVenta();
+        whereQuery(ruta);
 
 
         return view;
@@ -496,26 +502,59 @@ public class CatalogoFragment extends Fragment {
     public void subirReserva(){
         Log.d(TAG,"Subiendo reserva");
         Fecha fecha = new Fecha();
+        fecha.setFecha(fecha.sumarDias(fecha.getFecha(),1));
         String ruta = fecha.getRutaVenta();
-        String hora = fecha.getHora(fecha.getFecha());
-        myRef.child("/reservas/"+ruta+"/"+user.getUid()+"/"+hora).setValue(articulosReservados());
+        Reserva reserva = new Reserva();
+        addArticulosReservados(reserva);
+        reserva.setEstado("Por confirmar");
+        reserva.setUserId(user.getUid());
+        reserva.setUserName(user.getDisplayName());
+        String key = myRef.child("/reservas/"+ruta+"/").push().getKey();
+        reserva.setIdentificador(key);
+        myRef.child("/reservas/"+ruta+"/"+key+"/").setValue(reserva);
         Toast.makeText(getContext(),"Reserva registrada",Toast.LENGTH_SHORT).show();
 
     }
 
-    public String articulosReservados(){
-        String articulosReservados = "";
+    public void addArticulosReservados(Reserva reserva){
         for (int i =0; i< carrito.size(); i++){
             Articulo aux = (Articulo) carrito.get(i);
-            articulosReservados = articulosReservados + aux.getArticuloId() + "&";
+            reserva.addArticulo(aux.getArticuloId());
         }
-        return articulosReservados;
     }
 
-    public void guardarReservaEnPerfil(){
+    public void whereQuery(String ruta){
+        DatabaseReference myRef2 = database.getReference("/reservas/"+ruta);
+        Log.d("query","Entrando en whereQuery()");
+        myRef2.orderByChild("estado").equalTo("Por confirmar").addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String prevChildKey) {
+                //System.out.println(dataSnapshot.getKey());
+                Log.d("query",dataSnapshot.getKey());
+            }
 
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+
+        });
     }
-
 
 
 }

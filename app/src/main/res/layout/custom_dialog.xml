@@ -14,7 +14,7 @@
             android:id="@+id/foto_pop_up"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/inicio" />
+            android:background="@drawable/inicio2" />
 
         <RelativeLayout
             android:layout_width="match_parent"

@@ -83,8 +83,12 @@ public class NoticiasFragment extends Fragment {
 
         gif = (GifImageView) view.findViewById(R.id.gifImageView);
 
+        try{
+            descargarParte();
+        }catch (Exception e){
+            Log.d(TAG,"Problemas al descargar parte metereologico");
+        }
 
-        descargarParte();
 
         return view;
     }

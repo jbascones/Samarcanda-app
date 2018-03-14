@@ -15,6 +15,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Layout;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -51,6 +52,7 @@ import com.jorgebascones.samarcanda.Modelos.CarritoItem;
 import com.jorgebascones.samarcanda.Modelos.Celda;
 import com.jorgebascones.samarcanda.Modelos.Comentario;
 import com.jorgebascones.samarcanda.Modelos.Fecha;
+import com.jorgebascones.samarcanda.Modelos.Reserva;
 import com.jorgebascones.samarcanda.Modelos.User;
 import com.kunzisoft.switchdatetime.SwitchDateTimeDialogFragment;
 import com.squareup.picasso.Picasso;
@@ -107,6 +109,11 @@ public class MainActivity extends AppCompatActivity
     StorageReference storageReference;
     FirebaseStorage storage;
     boolean subir;
+
+    private final int REALIZAR_VENTA = "realizar venta".hashCode();
+    private final int SUBIR_POST = "subir post".hashCode();
+    private final int PAGO = "pago".hashCode();
+    private final int RESERVAS = "reservas".hashCode();
 
 
     @Override
@@ -171,6 +178,8 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        gestionDrawer(navigationView.getMenu());
+
         Snackbar.make(getWindow().getDecorView().getRootView(), "Hola de nuevo "+miUsuario.getNombre(), Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show();
 
@@ -194,8 +203,14 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
+        construirMenu(menu);
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
+    }
+    //TODO: menu propio de cada fragment
+    public void construirMenu(Menu menu){
+        menu.add(Menu.NONE, 1, Menu.NONE, "Opción con código")
+                .setIcon(android.R.drawable.ic_menu_preferences);
     }
 
     @Override
@@ -250,7 +265,7 @@ public class MainActivity extends AppCompatActivity
             fragmenActual = "comentarios";
 
 
-        } else if (id == R.id.venta_drawer) {
+        } else if (id == REALIZAR_VENTA) {
 
 
             VentaFragment ventaFragment = new VentaFragment();
@@ -297,7 +312,7 @@ public class MainActivity extends AppCompatActivity
             fragmenActual = "catalogo";
 
 
-        } else if (id == R.id.nav_send) {
+        } else if (id == SUBIR_POST) {
             SubirPost subirPost = new SubirPost();
 
             FragmentManager manager = getSupportFragmentManager();
@@ -312,12 +327,60 @@ public class MainActivity extends AppCompatActivity
             fragmenActual = "subir post";
 
 
+        }else if (id == PAGO) {
+            PagoFragment pagoFragment = new PagoFragment();
+
+            FragmentManager manager = getSupportFragmentManager();
+
+            manager.beginTransaction().replace(R.id.main_fragmento,
+                    pagoFragment,
+                    pagoFragment.getTag()
+            ).commit();
+
+            loading.setVisibility(View.INVISIBLE);
+
+            fragmenActual = "pago";
+
+
+        }else if (id == RESERVAS) {
+            ReservasFragment reservasFragment = new ReservasFragment();
+
+            FragmentManager manager = getSupportFragmentManager();
+
+            manager.beginTransaction().replace(R.id.main_fragmento,
+                    reservasFragment,
+                    reservasFragment.getTag()
+            ).commit();
+
+            loading.setVisibility(View.INVISIBLE);
+
+            fragmenActual = "reservas";
+
+
         }
+
+        Log.d("Menu",item.getItemId()+"");
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         gestionFab();
         return true;
+    }
+
+    public void gestionDrawer(Menu menu){
+        menu.add(Menu.NONE,REALIZAR_VENTA,Menu.NONE,"Realizar venta")
+                .setIcon(R.drawable.ic_menu_slideshow);
+        menu.add(Menu.NONE,SUBIR_POST,Menu.NONE,"Subir Post")
+                .setIcon(R.drawable.ic_menu_send);
+        menu.add(Menu.NONE,PAGO,Menu.NONE,"Pago")
+                .setIcon(R.drawable.ic_menu_camera);
+        menu.add(Menu.NONE,RESERVAS,Menu.NONE,"Reservas")
+                .setIcon(R.drawable.ic_venta_confirmada);
+        for(int i=0;i<menu.size();i++){
+            menu.getItem(i).setCheckable(true);
+        }
+
+
     }
 
 
@@ -327,6 +390,7 @@ public class MainActivity extends AppCompatActivity
     public void onFragmentInteraction(String data) {
 
     }
+
 
 
 
@@ -876,8 +940,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void dialogModificar(){
-        View view = findViewById(R.id.id_unidades);
-        final PrettyDialog dialog = new PrettyDialog(view.getContext());
+
+        final PrettyDialog dialog = new PrettyDialog(MainActivity.this);
         dialog
                 .setTitle("¡¡Sin conexión!!")
                 .setMessage("Revisa tu red")
