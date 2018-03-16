@@ -82,6 +82,8 @@ public class MainActivity extends AppCompatActivity
 
     //Atributos app
     User miUsuario;
+    boolean isVendedor;
+    boolean [] infoDescargada;
 
     //Atributos Auth
     FirebaseUser user;
@@ -89,8 +91,6 @@ public class MainActivity extends AppCompatActivity
 
     //Atributos firebase
     DatabaseReference myRef = database.getReference(); //referencia a la raiz
-
-    WelcomeHelper welcomeScreen;
 
     //Intent pasa valor
     Bundle bundle;
@@ -114,6 +114,8 @@ public class MainActivity extends AppCompatActivity
     private final int SUBIR_POST = "subir post".hashCode();
     private final int PAGO = "pago".hashCode();
     private final int RESERVAS = "reservas".hashCode();
+    private final int MI_PERFIL = "mi perfil".hashCode();
+    private final int MIS_RESERVAS = "mis reservas".hashCode();
 
 
     @Override
@@ -130,7 +132,9 @@ public class MainActivity extends AppCompatActivity
 
         isOnline();
 
+        isVendedor = false;
 
+        infoDescargada = new boolean[2];
 
     }
 
@@ -281,7 +285,7 @@ public class MainActivity extends AppCompatActivity
 
             fragmenActual = "venta";
 
-        } else if (id == R.id.tarjeta_drawer) {
+        } else if (id == MI_PERFIL) {
 
             MiPerfilFragment tarjetaFragment = MiPerfilFragment.newInstance(miUsuario.getNombre(),miUsuario.getUsuarioId(),miUsuario.getUrlFoto());
 
@@ -357,6 +361,21 @@ public class MainActivity extends AppCompatActivity
             fragmenActual = "reservas";
 
 
+        }else if (id == MIS_RESERVAS) {
+            MisReservasFragment misReservasFragment = new MisReservasFragment();
+
+            FragmentManager manager = getSupportFragmentManager();
+
+            manager.beginTransaction().replace(R.id.main_fragmento,
+                    misReservasFragment,
+                    misReservasFragment.getTag()
+            ).commit();
+
+            loading.setVisibility(View.INVISIBLE);
+
+            fragmenActual = "mis reservas";
+
+
         }
 
         Log.d("Menu",item.getItemId()+"");
@@ -368,14 +387,16 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void gestionDrawer(Menu menu){
-        menu.add(Menu.NONE,REALIZAR_VENTA,Menu.NONE,"Realizar venta")
-                .setIcon(R.drawable.ic_menu_slideshow);
-        menu.add(Menu.NONE,SUBIR_POST,Menu.NONE,"Subir Post")
-                .setIcon(R.drawable.ic_menu_send);
+
+        if(isVendedor){
+            setDrawerVendedor(menu);
+        }else{
+            setDrawerCliente(menu);
+        }
+
         menu.add(Menu.NONE,PAGO,Menu.NONE,"Pago")
                 .setIcon(R.drawable.ic_menu_camera);
-        menu.add(Menu.NONE,RESERVAS,Menu.NONE,"Reservas")
-                .setIcon(R.drawable.ic_venta_confirmada);
+
         for(int i=0;i<menu.size();i++){
             menu.getItem(i).setCheckable(true);
         }
@@ -423,6 +444,8 @@ public class MainActivity extends AppCompatActivity
 
             bajarUser(nuevoUser.usuarioId);
 
+            isVendedor(nuevoUser.usuarioId);
+
             Log.d(TAG,"descargarPerfil quiere lanzar primera pantalla");
 
         } else{
@@ -430,6 +453,8 @@ public class MainActivity extends AppCompatActivity
             //bajar user de firebase
 
             bajarUser(id);
+
+            isVendedor(id);
 
         }
 
@@ -449,8 +474,12 @@ public class MainActivity extends AppCompatActivity
                 if(miUsuario!=null){
                     Log.d(TAG, "User NO NULL");
                     if(miUsuario.getEstatus()==1){
-                        lanzarPrimeraPantalla();
+                        infoDescargada[0] = true;
+                        if(infoDescargada[0]==true && infoDescargada[1]==true){
+                            lanzarPrimeraPantalla();
+                        }
                     } else if(miUsuario.getEstatus()==0){
+
                         lanzarCreacionUser();
                     }
 
@@ -974,6 +1003,56 @@ public class MainActivity extends AppCompatActivity
                 .setAnimationEnabled(false)
                 .show();
     }
+
+    public void setDrawerVendedor(Menu menu){
+        menu.add(Menu.NONE,REALIZAR_VENTA,Menu.NONE,"Realizar venta")
+                .setIcon(R.drawable.ic_menu_slideshow);
+        menu.add(Menu.NONE,RESERVAS,Menu.NONE,"Reservas")
+                .setIcon(R.drawable.ic_venta_confirmada);
+        menu.add(Menu.NONE,SUBIR_POST,Menu.NONE,"Subir Post")
+                .setIcon(R.drawable.ic_menu_send);
+    }
+
+    public void setDrawerCliente(Menu menu){
+        menu.add(Menu.NONE,RESERVAS,Menu.NONE,"Mi perfil")
+                .setIcon(R.mipmap.ic_tarjeta);
+        menu.add(Menu.NONE,MIS_RESERVAS,Menu.NONE,"Mis reservas")
+                .setIcon(R.drawable.ic_venta_confirmada);
+    }
+
+    public void isVendedor(String userId){
+        DatabaseReference myRefVendedores = database.getReference("/vendedores/"+userId);
+        myRefVendedores.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                Boolean value = dataSnapshot.getValue(Boolean.class);
+
+                if(value != null){
+                    isVendedor = true;
+                }else{
+                    isVendedor= false;
+                }
+
+                infoDescargada[1] = true;
+
+                if(infoDescargada[0]==true && infoDescargada[1]==true){
+                    lanzarPrimeraPantalla();
+                }
+
+                Log.d(TAG, "Value is: " + value);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w(TAG, "Failed to read value.", error.toException());
+            }
+        });
+    }
+
+
 
 
 

@@ -15,10 +15,6 @@
             android:icon="@mipmap/ic_comentario"
             android:title="Comentarios" />
 
-        <item
-            android:id="@+id/tarjeta_drawer"
-            android:icon="@mipmap/ic_tarjeta"
-            android:title="Mi Perfil" />
     </group>
     
 

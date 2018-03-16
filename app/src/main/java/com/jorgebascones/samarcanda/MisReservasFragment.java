@@ -12,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -30,25 +29,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.jorgebascones.samarcanda.Modelos.Articulo;
-import com.jorgebascones.samarcanda.Modelos.Categoria;
 import com.jorgebascones.samarcanda.Modelos.Fecha;
 import com.jorgebascones.samarcanda.Modelos.Reserva;
-import com.stripe.android.Stripe;
-import com.stripe.android.TokenCallback;
-import com.stripe.android.model.Card;
-import com.stripe.android.model.Token;
-import com.stripe.android.view.CardInputWidget;
 
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import co.lujun.popmenulayout.MenuBean;
 import co.lujun.popmenulayout.OnMenuClickListener;
 import co.lujun.popmenulayout.PopMenuLayout;
 
@@ -57,7 +44,7 @@ import co.lujun.popmenulayout.PopMenuLayout;
  * A simple {@link Fragment} subclass.
  */
 
-public class ReservasFragment extends Fragment {
+public class MisReservasFragment extends Fragment {
 
 
     FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -187,7 +174,7 @@ public class ReservasFragment extends Fragment {
         reservas.add("No hay reservas");
         adapter.notifyDataSetChanged();
         keys.clear();
-        myRef2.orderByChild("estado").equalTo(estado).addChildEventListener(new ChildEventListener() {
+        myRef2.orderByChild("userId").equalTo(user.getUid()).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String prevChildKey) {
 
@@ -196,7 +183,6 @@ public class ReservasFragment extends Fragment {
                         descargarListaArticulos(dataSnapshot.getValue(Reserva.class).getArticulos().get(i), dataSnapshot.getValue(Reserva.class));
                     }
                 }
-
 
             }
 
