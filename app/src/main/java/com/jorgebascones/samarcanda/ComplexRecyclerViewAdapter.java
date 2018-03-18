@@ -233,6 +233,11 @@ public class ComplexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         if (reserva != null) {
             vh8.getLabel1().setText(reserva.getTextoArticulos());
             vh8.getLabel2().setText("Estado: "+reserva.getEstado());
+            if(reserva.getEstado().equals("Por confirmar")){
+                vh8.getButton().setText("Confirmar reserva");
+            }else{
+                vh8.getButton().setText("Completar venta");
+            }
             //Fecha fecha = new Fecha();
             vh8.getLabel3().setText(reserva.getUserName());
         }

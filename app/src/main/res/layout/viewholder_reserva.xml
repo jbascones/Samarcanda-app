@@ -55,7 +55,8 @@ card_view:contentPadding="4dp">
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:text="Button" />
+            android:text="Button"
+            android:theme="@style/ThemeOverlay.MyDarkButton"/>
 
 
     </RelativeLayout>

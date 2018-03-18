@@ -15,8 +15,12 @@ public class Venta {
     public int numeroArticulos;
     public String nombresArticulos;
     public int importe;
+    public boolean fromReserva;
 
 
+    public Venta() {
+        fromReserva = false;
+    }
 
     public User getUser() {
         return user;
@@ -94,5 +98,13 @@ public class Venta {
 
     public void setImporte(int importe) {
         this.importe = importe;
+    }
+
+    public boolean isFromReserva() {
+        return fromReserva;
+    }
+
+    public void setFromReserva(boolean fromReserva) {
+        this.fromReserva = fromReserva;
     }
 }

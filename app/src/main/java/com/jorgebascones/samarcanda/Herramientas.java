@@ -37,7 +37,7 @@ public class Herramientas {
             "        {" +
             "          \"index\" : \"11\"," +
             "          \"expandable\" : false," +
-            "          \"text\" : \"Producto reservado\"," +
+            "          \"text\" : \"Reserva confirmada\"," +
             "          \"child\" : [" +
             "            {" +
             "              \"index\" : \"110\"," +

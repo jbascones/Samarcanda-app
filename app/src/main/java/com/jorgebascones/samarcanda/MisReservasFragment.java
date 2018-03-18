@@ -4,6 +4,7 @@ package com.jorgebascones.samarcanda;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -173,6 +174,7 @@ public class MisReservasFragment extends Fragment {
         reservas.clear();
         reservas.add("No hay reservas");
         adapter.notifyDataSetChanged();
+        //TODO: filtrado de las reservas
         keys.clear();
         myRef2.orderByChild("userId").equalTo(user.getUid()).addChildEventListener(new ChildEventListener() {
             @Override
@@ -247,6 +249,14 @@ public class MisReservasFragment extends Fragment {
             @Override
             public void onItemClick(View view, int position) {
                 Log.d("query",""+view.getId()+"  "+position);
+                Reserva aux = (Reserva) reservas.get(position);
+                String texto;
+                if(aux.getEstado().equals("Por confirmar")){
+                    texto = "Uno de nuestros vendedores reservará tu pedido";
+                }else{
+                    texto = "Dirígete a un vendedor para completar la compra";
+                }
+                sacarSnackBar(texto);
             }
         });
 
@@ -413,7 +423,7 @@ public class MisReservasFragment extends Fragment {
         if(estadoQ==PROCESO){
             estadoStr = "Por confirmar";
         }else{
-            estadoStr = "Producto reservado";
+            estadoStr = "Reserva confirmada";
         }
         setTextoQuery();
         whereQuery(diaStr,estadoStr);
@@ -442,10 +452,15 @@ public class MisReservasFragment extends Fragment {
         if(estadoQ==PROCESO){
             estadoStr = "por confirmar";
         }else{
-            estadoStr = "producto reservado";
+            estadoStr = "reserva confirmada";
         }
         texto = "Reservas para "+diaStr+" y"+ " "+estadoStr;
         txt.setText(texto);
+    }
+
+    public void sacarSnackBar(String texto){
+        Snackbar.make(v.getRootView(), texto, Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show();
     }
 
 

@@ -99,6 +99,9 @@ public class MainActivity extends AppCompatActivity
 
     String fragmenActual;
 
+    //Fecha elegida en el calendario al crear perfil
+    String fechaElegidaCalendario;
+
     //Variables para la creacion de nuevos users
     private SwitchDateTimeDialogFragment dateTimeFragment;
     RecyclerView recyclerView;
@@ -682,7 +685,8 @@ public class MainActivity extends AppCompatActivity
             public void onPositiveButtonClick(Date date) {
 
                 TextView txt6 = (TextView) findViewById(R.id.textView6);
-                String fechaLeer = fecha.fechaPreparada(myDateFormat.format(date),false );
+                fechaElegidaCalendario = myDateFormat.format(date);
+                String fechaLeer = fecha.fechaPreparada(fechaElegidaCalendario,false );
                 txt6.setText(fechaLeer);
                 Log.d("Calendario",myDateFormat.format(date));
                 Button button = (Button) findViewById(R.id.bn_continuar);
@@ -904,7 +908,7 @@ public class MainActivity extends AppCompatActivity
 
     public void rotarImagen(View v){
         Matrix matrix = new Matrix();
-        matrix.postRotate(-90); // anti-clockwise by 90 degrees
+        matrix.postRotate(-90); // giro de 90 grados en contra del sentido del reloj
         bitmap = Bitmap.createBitmap(bitmap , 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix,true);
         ImageView imagenElegida = (ImageView) findViewById(R.id.imagen_elegida);
         imagenElegida.setImageBitmap(bitmap);
@@ -951,8 +955,7 @@ public class MainActivity extends AppCompatActivity
         }else{
             miUsuario.setGenero("femenino");
         }
-        TextView textView = (TextView) findViewById(R.id.textView6);
-        miUsuario.setFechaNacimiento(textView.getText().toString());
+        miUsuario.setFechaNacimiento(fechaElegidaCalendario.substring(0,10));
         miUsuario.setEstatus(1);
     }
 
@@ -1005,7 +1008,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void setDrawerVendedor(Menu menu){
-        menu.add(Menu.NONE,REALIZAR_VENTA,Menu.NONE,"Realizar venta")
+        menu.add(Menu.NONE,REALIZAR_VENTA,Menu.NONE,"Ventas")
                 .setIcon(R.drawable.ic_menu_slideshow);
         menu.add(Menu.NONE,RESERVAS,Menu.NONE,"Reservas")
                 .setIcon(R.drawable.ic_venta_confirmada);
@@ -1014,7 +1017,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void setDrawerCliente(Menu menu){
-        menu.add(Menu.NONE,RESERVAS,Menu.NONE,"Mi perfil")
+        menu.add(Menu.NONE,MI_PERFIL,Menu.NONE,"Mi perfil")
                 .setIcon(R.mipmap.ic_tarjeta);
         menu.add(Menu.NONE,MIS_RESERVAS,Menu.NONE,"Mis reservas")
                 .setIcon(R.drawable.ic_venta_confirmada);

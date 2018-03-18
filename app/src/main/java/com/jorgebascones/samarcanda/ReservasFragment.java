@@ -1,6 +1,7 @@
 package com.jorgebascones.samarcanda;
 
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -41,6 +42,7 @@ import com.stripe.android.view.CardInputWidget;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -51,6 +53,7 @@ import java.util.Map;
 import co.lujun.popmenulayout.MenuBean;
 import co.lujun.popmenulayout.OnMenuClickListener;
 import co.lujun.popmenulayout.PopMenuLayout;
+import pl.droidsonroids.gif.GifImageView;
 
 
 /**
@@ -74,6 +77,7 @@ public class ReservasFragment extends Fragment {
     public int dia = HOY;
     public int estadoQ = PROCESO;
     private View v;
+    GifImageView gif;
 
 
 
@@ -103,6 +107,9 @@ public class ReservasFragment extends Fragment {
         myTimer();
 
         v = view;
+
+        gif = (GifImageView) v.findViewById(R.id.gifImageView);
+        cargando(false);
 
         return view;
     }
@@ -144,7 +151,7 @@ public class ReservasFragment extends Fragment {
 
 
 
-    public void confirmarReserva(){
+    public void setPeticionConfirmacion(){
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(getContext());
         String url ="https://us-central1-samarcanda-f80f3.cloudfunctions.net/probandoReserva";
@@ -190,7 +197,7 @@ public class ReservasFragment extends Fragment {
         myRef2.orderByChild("estado").equalTo(estado).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String prevChildKey) {
-
+                cargando(true);
                 if(addReserva(dataSnapshot.getKey(),dataSnapshot.getValue(Reserva.class))){
                     for (int i=0;i<dataSnapshot.getValue(Reserva.class).getArticulos().size();i++){
                         descargarListaArticulos(dataSnapshot.getValue(Reserva.class).getArticulos().get(i), dataSnapshot.getValue(Reserva.class));
@@ -261,6 +268,14 @@ public class ReservasFragment extends Fragment {
             @Override
             public void onItemClick(View view, int position) {
                 Log.d("query",""+view.getId()+"  "+position);
+                Reserva aux = (Reserva)reservas.get(position);
+                if(aux.getEstado().equals("Por confirmar")){
+                    confirmarReserva(aux);
+                }else{
+                    realizarVenta(aux);
+                    eliminarReserva(aux);
+
+                }
             }
         });
 
@@ -380,6 +395,7 @@ public class ReservasFragment extends Fragment {
             reservas.remove(posicion);
             reservas.add(posicion, aux);
             adapter.notifyDataSetChanged();
+            cargando(false);
 
 
     }
@@ -427,7 +443,7 @@ public class ReservasFragment extends Fragment {
         if(estadoQ==PROCESO){
             estadoStr = "Por confirmar";
         }else{
-            estadoStr = "Producto reservado";
+            estadoStr = "Reserva confirmada";
         }
         setTextoQuery();
         whereQuery(diaStr,estadoStr);
@@ -456,10 +472,65 @@ public class ReservasFragment extends Fragment {
         if(estadoQ==PROCESO){
             estadoStr = "por confirmar";
         }else{
-            estadoStr = "producto reservado";
+            estadoStr = "reserva confirmada";
         }
         texto = "Reservas para "+diaStr+" y"+ " "+estadoStr;
         txt.setText(texto);
+    }
+
+    public void realizarVenta(Reserva reserva){
+        Intent myIntent = new Intent(getActivity(), LectorQRActivity.class);
+        myIntent.putExtra("reserva","si");
+        myIntent.putExtra("user",reserva.getUserId());
+        myIntent.putExtra("lista",(Serializable)reserva.getArticulos());
+        startActivity(myIntent);
+    }
+
+    public void confirmarReserva(Reserva reserva){
+        reserva.setEstado("Reserva confirmada");
+        reserva.setTextoArticulos(null);
+        for (int i=0;i<reservas.size();i++){
+            Reserva aux = (Reserva) reservas.get(i);
+            if(aux.getIdentificador().equals(reserva.getIdentificador())){
+                reservas.remove(i);
+                adapter.notifyDataSetChanged();
+                String fechaReserva;
+                if(dia == HOY){
+                    fechaReserva = getHoy();
+                }else{
+                    fechaReserva = getManana();
+                }
+                DatabaseReference myRef = database.getReference("/reservas/"+fechaReserva+"/"+reserva.getIdentificador());
+                myRef.setValue(reserva);
+            }
+        }
+    }
+
+    public void eliminarReserva(Reserva reserva){
+
+        for (int i=0;i<reservas.size();i++){
+            Reserva aux = (Reserva) reservas.get(i);
+            if(aux.getIdentificador().equals(reserva.getIdentificador())){
+                reservas.remove(i);
+                adapter.notifyDataSetChanged();
+                String fechaReserva;
+                if(dia == HOY){
+                    fechaReserva = getHoy();
+                }else{
+                    fechaReserva = getManana();
+                }
+                DatabaseReference myRef = database.getReference("/reservas/"+fechaReserva+"/"+reserva.getIdentificador());
+                myRef.setValue(null);
+            }
+        }
+    }
+
+    public void cargando(boolean cargando){
+        if (cargando){
+            gif.setVisibility(View.VISIBLE);
+        }else{
+            gif.setVisibility(View.INVISIBLE);
+        }
     }
 
 

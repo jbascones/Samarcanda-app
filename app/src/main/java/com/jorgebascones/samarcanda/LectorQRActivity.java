@@ -1,6 +1,7 @@
 package com.jorgebascones.samarcanda;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -36,6 +37,8 @@ import com.squareup.picasso.Picasso;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import libs.mjn.prettydialog.PrettyDialog;
 import libs.mjn.prettydialog.PrettyDialogCallback;
@@ -68,6 +71,8 @@ public class LectorQRActivity extends AppCompatActivity implements ZXingScannerV
         Log.d(TAG,nuevaFecha.getRutaVenta());
 
         gestionElements();
+
+        gestionIntent();
 
         ventaCofirmada = false;
 
@@ -186,6 +191,8 @@ public class LectorQRActivity extends AppCompatActivity implements ZXingScannerV
                 Button botonLeer = (Button) findViewById(R.id.id_button_leer_cliente);
                 botonLeer.setVisibility(View.VISIBLE);
             } else {
+                View clienteElement = findViewById(R.id.cliente_element);
+                clienteElement.setVisibility(View.VISIBLE);
                 TextView id = (TextView) findViewById(R.id.id_element_id);
                 id.setText("Cliente");
                 TextView nombre = (TextView) findViewById(R.id.id_element_nombre);
@@ -432,18 +439,26 @@ public class LectorQRActivity extends AppCompatActivity implements ZXingScannerV
             CarritoItem carritoItem = new CarritoItem(articulo);
             listaValores.add(carritoItem);
         }else{
+            int posicion = -1;
             for(int i=0;i<listaValores.size();i++){
                 CarritoItem aux = (CarritoItem) listaValores.get(i);
                 if(aux.getCarritoItem().getArticuloId().equals(articulo.getArticuloId())){
-                    aux.addUnidad();
-                    listaValores.remove(i);
-                    listaValores.add(i,aux);
-                }else{
-                    CarritoItem carritoItem = new CarritoItem(articulo);
-                    listaValores.add(carritoItem);
+                    posicion = i;
                 }
             }
+
+            if(posicion !=-1){
+                CarritoItem aux = (CarritoItem) listaValores.get(posicion);
+                aux.addUnidad();
+                listaValores.remove(posicion);
+                listaValores.add(posicion,aux);
+            }else{
+                CarritoItem carritoItem = new CarritoItem(articulo);
+                listaValores.add(carritoItem);
+            }
+
         }
+
 
     }
 
@@ -538,6 +553,22 @@ public class LectorQRActivity extends AppCompatActivity implements ZXingScannerV
                 )
                 .setAnimationEnabled(false)
                 .show();
+    }
+
+    public void gestionIntent(){
+        Intent myIntent = getIntent();
+        String reserva = myIntent.getStringExtra("reserva");
+        if(reserva.equals("si")){
+            venta.setFromReserva(true);
+            String userStr= myIntent.getStringExtra("user");
+            Log.d(TAG,"USER ID PASADO "+userStr);
+            bajarUser(userStr);
+            ArrayList<String> listaArticulos = (ArrayList<String>) myIntent.getSerializableExtra("lista");
+            for(int i=0;i<listaArticulos.size();i++){
+                bajarArticulo(listaArticulos.get(i));
+            }
+        }
+
     }
 
 

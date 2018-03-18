@@ -57,6 +57,7 @@ public class VentaFragment extends Fragment {
 
                 Intent intent = new Intent(getActivity(), LectorQRActivity.class);
                 //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra("reserva","no");
                 startActivity(intent);
 
 
