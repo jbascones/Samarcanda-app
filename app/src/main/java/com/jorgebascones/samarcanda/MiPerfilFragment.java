@@ -2,8 +2,10 @@ package com.jorgebascones.samarcanda;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +14,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.jorgebascones.samarcanda.Modelos.Fecha;
 import com.jorgebascones.samarcanda.Modelos.User;
 import com.squareup.picasso.Picasso;
+
+import ch.halcyon.squareprogressbar.SquareProgressBar;
+import ch.halcyon.squareprogressbar.utils.PercentStyle;
+import libs.mjn.prettydialog.PrettyDialog;
+import libs.mjn.prettydialog.PrettyDialogCallback;
 
 
 /**
@@ -35,6 +48,10 @@ public class MiPerfilFragment extends Fragment {
     private String miUserId;
     private String miUrl;
     private String estado;
+    private SquareProgressBar squareProgressBar;
+    private FirebaseDatabase database;
+    DatabaseReference myRef;
+    private View view;
 
 
 
@@ -79,7 +96,7 @@ public class MiPerfilFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
-        final View view = inflater.inflate(R.layout.tarjeta, container, false);
+        view = inflater.inflate(R.layout.tarjeta, container, false);
 
         ((MainActivity) getActivity()).getSupportActionBar().setTitle("Mi Perfil");
 
@@ -93,6 +110,10 @@ public class MiPerfilFragment extends Fragment {
         colocarFoto(view);
 
         rellenarTarjeta(view);
+
+        database = FirebaseDatabase.getInstance();
+
+
 
 
         buttonQr.setOnClickListener(new View.OnClickListener() {
@@ -108,6 +129,10 @@ public class MiPerfilFragment extends Fragment {
 
             }
         });
+
+        setProgressSquare(view);
+
+        descargarPuntos();
 
         return view;
     }
@@ -192,7 +217,124 @@ public class MiPerfilFragment extends Fragment {
         mailTV.setText(yo.getMail());
     }
 
+    public void setProgressSquare(View v){
+        squareProgressBar = (SquareProgressBar) v.findViewById(R.id.sprogressbar);
+        squareProgressBar.showProgress(true);
+        squareProgressBar.setImage(R.drawable.circle_translucent);
+        squareProgressBar.setColor("#ffa000");
+        squareProgressBar.setRoundedCorners(true);
+        PercentStyle percentStyle = new PercentStyle(Paint.Align.CENTER, 60, true);
+        percentStyle.setCustomText("/100 puntos");
+        squareProgressBar.setPercentStyle(percentStyle);
+        squareProgressBar.setProgress(50.0);
+        squareProgressBar.drawStartline(true);
 
+        squareProgressBar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialogInfo();
+            }
+        });
+    }
+
+    public void setProgress(float p){
+        squareProgressBar.setProgress(p);
+    }
+
+    public void descargarPuntos(){
+        myRef = database.getReference("estadisticas/puntos/"+miUserId);
+        // Read from the database
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                Long value = dataSnapshot.getValue(Long.class);
+
+                if(value != null){
+
+                    float progreso = 2 *  value;
+
+                    if(progreso>100 || progreso==100){
+                        tarjetaDescuento();
+                    }else{
+                        setProgress(progreso);
+                    }
+                }
+
+
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+
+            }
+        });
+    }
+
+    public void dialogInfo(){
+
+        final PrettyDialog dialog = new PrettyDialog(getContext());
+        dialog
+                .setTitle("Tus puntos")
+                .setMessage("Con tus compras gana puntos para conseguir un descuento")
+                .addButton(
+                        "¡Genial!",					// button text
+                        R.color.pdlg_color_white,		// button text color
+                        R.color.pdlg_color_green,		// button background color
+                        new PrettyDialogCallback() {		// button OnClick listener
+                            @Override
+                            public void onClick() {
+                                setProgress(200);
+                                dialog.dismiss();
+                            }
+                        }
+                )
+
+
+                .setAnimationEnabled(true)
+                .show();
+    }
+
+    private void tarjetaDescuento(){
+        try{
+            LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            view = inflater.inflate(R.layout.tarjeta_descuento, null);
+            ViewGroup rootView = (ViewGroup) getView();
+            rootView.removeAllViews();
+            TextView nombre = (TextView)view.findViewById(R.id.nombreText);
+            nombre.setText("Nombre");
+            TextView mail = (TextView)view.findViewById(R.id.segundoCampo);
+            mail.setText("Email");
+            TextView txt = (TextView) view.findViewById(R.id.txt_descuento);
+            txt.setText("DESCUENTO DE 5€");
+            rellenarTarjeta(view);
+            colocarFoto(view);
+            setDescuentoListener();
+            rootView.addView(view);
+        }catch (Exception e){
+            Log.d("crash","Problema con tarheta de descuento");
+        }
+    }
+
+    public void setDescuentoListener(){
+        Button boton = (Button) view.findViewById(R.id.id_card_botonCambio);
+        boton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(estado.equals("foto")){
+                    colocarQR(view);
+
+                }else{
+                    colocarFoto(view);
+                }
+
+
+            }
+        });
+    }
 
 
 }

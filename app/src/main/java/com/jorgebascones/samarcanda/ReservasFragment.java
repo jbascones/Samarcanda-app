@@ -323,7 +323,11 @@ public class ReservasFragment extends Fragment {
         }
 
         if (add){
-            reservasNoNull();
+            try{
+                reservasNoNull();
+            }catch (Exception e){
+                Log.d("crash","Crash reserva no null");
+            }
             reservas.add(newValue);
             keys.add(key);
         }

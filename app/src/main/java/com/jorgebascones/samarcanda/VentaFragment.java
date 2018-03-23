@@ -93,6 +93,27 @@ public class VentaFragment extends Fragment {
             }
         });
 
+        Button buttonEstadisticas = (Button) view.findViewById(R.id.button_ir_graficas);
+
+        buttonEstadisticas.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                GraficasFragment graficasFragment = new GraficasFragment();
+
+                FragmentManager manager = getFragmentManager();
+
+                manager.beginTransaction().replace(R.id.main_fragmento,
+                        graficasFragment,
+                        graficasFragment.getTag()
+                ).commit();
+
+
+            }
+        });
+
+
         return view;
     }
 

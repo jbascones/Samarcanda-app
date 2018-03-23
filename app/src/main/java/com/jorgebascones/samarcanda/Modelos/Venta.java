@@ -16,6 +16,8 @@ public class Venta {
     public String nombresArticulos;
     public int importe;
     public boolean fromReserva;
+    public String genero;
+    public boolean anonimo;
 
 
     public Venta() {
@@ -106,5 +108,21 @@ public class Venta {
 
     public void setFromReserva(boolean fromReserva) {
         this.fromReserva = fromReserva;
+    }
+
+    public String getGenero() {
+        return genero;
+    }
+
+    public void setGenero(String genero) {
+        this.genero = genero;
+    }
+
+    public boolean isAnonimo() {
+        return anonimo;
+    }
+
+    public void setAnonimo(boolean anonimo) {
+        this.anonimo = anonimo;
     }
 }

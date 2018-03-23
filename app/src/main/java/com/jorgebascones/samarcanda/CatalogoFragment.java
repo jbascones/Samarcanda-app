@@ -12,6 +12,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -124,11 +126,19 @@ public class CatalogoFragment extends Fragment {
         String ruta = fecha.getRutaVenta();
         whereQuery(ruta);
 
+        setHasOptionsMenu(true);
+
 
         return view;
     }
 
-
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // TODO Add your menu entries here
+        menu.add(Menu.NONE, 1, Menu.NONE, "Añadir artículo")
+                .setIcon(android.R.drawable.ic_menu_preferences);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
 
 
     @Override

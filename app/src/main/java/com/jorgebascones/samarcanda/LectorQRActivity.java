@@ -337,7 +337,9 @@ public class LectorQRActivity extends AppCompatActivity implements ZXingScannerV
         venta.setArticuloId(idsArticulos);
 
         venta.setClienteId(venta.getUser().getUsuarioId());
+        venta.setGenero(venta.getUser().getGenero());
         venta.setUser(null);
+
 
     }
 

@@ -218,6 +218,7 @@ public class MainActivity extends AppCompatActivity
     public void construirMenu(Menu menu){
         menu.add(Menu.NONE, 1, Menu.NONE, "Opción con código")
                 .setIcon(android.R.drawable.ic_menu_preferences);
+        menu.removeItem(1);
     }
 
     @Override

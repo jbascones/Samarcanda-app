@@ -22,6 +22,18 @@
             android:layout_centerHorizontal="true" />
 
         <Button
+            android:id="@+id/button_ir_graficas"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:onClick="irVentas"
+            android:text="Ver estadísticas"
+            android:theme="@style/ThemeOverlay.MyDarkButton"
+            android:layout_centerVertical="true"
+            android:layout_alignLeft="@+id/id_botonVenta"
+            android:layout_alignStart="@+id/id_botonVenta" />
+
+        <Button
             android:id="@+id/id_botonVerVentas"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

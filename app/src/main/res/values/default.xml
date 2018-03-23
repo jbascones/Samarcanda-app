@@ -45,6 +45,14 @@
         <item>#ffd389</item>
     </string-array>
 
+    <string-array name="confeti">
+        <item>#ffa000</item>
+        <item>#ffbd4e</item>
+        <item>#ffe000</item>
+        <item>#ffd389</item>
+        <item>#fffdeb</item>
+    </string-array>
+
     <string-array name="path">
         <item>com.github.glomadrian.grav.generator.animation.PathAnimator</item>
         <item>com.github.glomadrian.grav.generator.animation.BallSizeAnimator</item>

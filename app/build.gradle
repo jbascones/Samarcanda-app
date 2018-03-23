@@ -56,6 +56,8 @@ dependencies {
     compile 'com.stripe:stripe-android:4.1.6'//Pago con Stripe
     compile 'com.android.volley:volley:1.0.0'//Volley: http
     compile 'co.lujun:popmenulayout:0.9.3'//Menu desplegable
+    compile 'ch.halcyon:squareprogressbar:1.6.3'//Square Progress
+    compile 'com.github.lecho:hellocharts-library:1.5.8@aar'//Graficas
 
 
 

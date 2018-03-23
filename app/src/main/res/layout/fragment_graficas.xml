@@ -1,0 +1,64 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.jorgebascones.samarcanda.VentaFragment">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/id_botonVerVentas"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:text="Actual"
+            android:theme="@style/ThemeOverlay.MyDarkButton"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true" />
+        <Button
+            android:id="@+id/id_mes_anterior"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:text="anterior"
+            android:theme="@style/ThemeOverlay.MyDarkButton"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@+id/id_botonVerVentas"
+            android:layout_toStartOf="@+id/id_botonVerVentas" />
+        <Button
+            android:id="@+id/id_mes_siguiente"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:text="siguiente"
+            android:theme="@style/ThemeOverlay.MyDarkButton"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/id_botonVerVentas"
+            android:layout_toEndOf="@+id/id_botonVerVentas" />
+
+        <lecho.lib.hellocharts.view.LineChartView
+            android:id="@+id/chart"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/id_botonVerVentas"
+            android:layout_above="@+id/id_cambiar" />
+        <Button
+            android:id="@+id/id_cambiar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:text="Cambiar gráfica"
+            android:theme="@style/ThemeOverlay.MyDarkButton"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+
+    </RelativeLayout>
+
+</FrameLayout>

@@ -2,6 +2,8 @@ package com.jorgebascones.samarcanda.Modelos;
 
 import android.util.Log;
 
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -15,6 +17,8 @@ import java.util.Map;
 public class Fecha {
 
     public String fecha;
+    public String mes;
+    public String anno;
 
     public Fecha(){
         fecha = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault()).format(new Date());
@@ -176,4 +180,54 @@ public class Fecha {
     public void setFecha(String fecha) {
         this.fecha = fecha;
     }
+
+    public String getDiaSemana(String string) throws ParseException {
+
+        DateFormat format = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH);
+        Date date = format.parse(string);
+        return traduccionDia(date.toString().substring(0,3));
+    }
+
+    public String traduccionDia(String string){
+        switch (string){
+            case "Mon":
+                return "L";
+            case "Tue":
+                return "M";
+            case "Wed":
+                return "X";
+            case "Thu":
+                return "J";
+            case "Fri":
+                return "V";
+            case "Sat":
+                return "S";
+            case "Sun":
+                return "D";
+            default:
+                return "No se";
+        }
+    }
+
+    public String sumarMesRuta(int suma){
+        int mes = StringToInt(getMes(fecha)) + suma;
+
+        int anno = StringToInt(getAnno(fecha));
+
+        if(mes>12){
+            mes = 1;
+            anno = anno +1;
+        }else if(mes==0){
+            mes = 12;
+            anno = anno -1;
+        }
+        String mesStr = mes + "";
+        if(mesStr.length()==1){
+            mesStr = "0" + mesStr;
+        }
+        this.mes = mesStr;
+        this.anno = anno + "";
+        return anno+"/"+mesStr;
+    }
+
 }
