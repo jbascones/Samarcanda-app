@@ -27,6 +27,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+import lecho.lib.hellocharts.gesture.ZoomType;
 import lecho.lib.hellocharts.model.Axis;
 import lecho.lib.hellocharts.model.AxisValue;
 import lecho.lib.hellocharts.model.ColumnChartData;
@@ -80,11 +81,12 @@ public class GraficasFragment extends Fragment {
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_graficas, container, false);
 
-        ((MainActivity) getActivity()).getSupportActionBar().setTitle("Gráficas de ventas");
+        ((MainActivity) getActivity()).getSupportActionBar().setTitle("Ventas por día");
 
         mesOffset = 0;
         setListeners(view);
         chart = (LineChartView) view.findViewById(R.id.chart);
+        chart.setZoomType(ZoomType.HORIZONTAL);
         //chart.setOnValueTouchListener(new ValueTouchListener());
         //gestionChart();
         //generateValues();
@@ -235,14 +237,15 @@ public class GraficasFragment extends Fragment {
     }
 
     public void setListeners(View v){
-        Button buttonVerVentas = (Button) v.findViewById(R.id.id_botonVerVentas);
+        final Button buttonActual = (Button) v.findViewById(R.id.id_botonVerVentas);
 
 
-        buttonVerVentas.setOnClickListener(new View.OnClickListener() {
+        buttonActual.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                generateValues();
-                generateData();
+
+                //generateValues();
+                //generateData();
 
             }
         });
@@ -255,6 +258,7 @@ public class GraficasFragment extends Fragment {
             public void onClick(View v) {
                 mesOffset --;
                 descargarListaVentas(f.sumarMesRuta(mesOffset));
+                buttonActual.setText(f.mes+"/"+f.anno);
 
             }
         });
@@ -267,10 +271,12 @@ public class GraficasFragment extends Fragment {
             public void onClick(View v) {
                 mesOffset ++;
                 descargarListaVentas(f.sumarMesRuta(mesOffset));
+                buttonActual.setText(f.mes+"/"+f.anno);
 
             }
         });
     }
+
 
 
 

@@ -39,6 +39,7 @@ import java.util.Map;
 
 import co.lujun.popmenulayout.OnMenuClickListener;
 import co.lujun.popmenulayout.PopMenuLayout;
+import pl.droidsonroids.gif.GifImageView;
 
 
 /**
@@ -54,14 +55,17 @@ public class MisReservasFragment extends Fragment {
     RecyclerView recyclerView;
     ComplexRecyclerViewAdapter adapter;
     public ArrayList<Object> reservas = new ArrayList<>();
+    public ArrayList<Object> reservasHoy = new ArrayList<>();
+    public ArrayList<Object> reservasManana = new ArrayList<>();
     public ArrayList<String> keys = new ArrayList<String>();
     public ArrayList<String> keysArticulos = new ArrayList<String>();
     public Map<String,Articulo> articulos = new HashMap<>();
-    public ArrayList<boolean[]> check = new ArrayList<boolean[]>();
     private final int HOY = 0, MANANA=1,PROCESO=2,RESERVADO=3;
-    public int dia = HOY;
+    private boolean todosDias;
+    public int dia = -1;
     public int estadoQ = PROCESO;
     private View v;
+    GifImageView gif;
 
 
 
@@ -73,7 +77,11 @@ public class MisReservasFragment extends Fragment {
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_reservas, container, false);
 
-        ((MainActivity) getActivity()).getSupportActionBar().setTitle("Reservas");
+        v = view;
+
+        gif = (GifImageView) v.findViewById(R.id.gifImageView);
+
+        ((MainActivity) getActivity()).getSupportActionBar().setTitle("Mis reservas");
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(false);
@@ -88,9 +96,11 @@ public class MisReservasFragment extends Fragment {
 
         bindDataToAdapter();
 
-        myTimer();
+        bajarTodosDatos();
 
-        v = view;
+        cargando(false);
+
+        myTimer();
 
         return view;
     }
@@ -132,43 +142,8 @@ public class MisReservasFragment extends Fragment {
 
 
 
-    public void confirmarReserva(){
-        // Instantiate the RequestQueue.
-        RequestQueue queue = Volley.newRequestQueue(getContext());
-        String url ="https://us-central1-samarcanda-f80f3.cloudfunctions.net/probandoReserva";
-
-        StringRequest postRequest = new StringRequest(Request.Method.POST, url,
-                new Response.Listener<String>()
-                {
-                    @Override
-                    public void onResponse(String response) {
-                        // response
-                        Log.d("Volley", "Response "+response);
-                    }
-                },
-                new Response.ErrorListener()
-                {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        // error
-                        Log.d("Volley", "Error "+error.toString());
-                    }
-                }
-        ) {
-            @Override
-            protected Map<String, String> getParams()
-            {
-                Map<String, String>  params = new HashMap<String, String>();
-                params.put("name", "Alif");
-                params.put("domain", "http://itsalif.info");
-
-                return params;
-            }
-        };
-        queue.add(postRequest);
-    }
-
-    public void whereQuery(String ruta, String estado){
+    public void whereQuery(final String ruta, String estado){
+        cargando(true);
         DatabaseReference myRef2 = database.getReference("/reservas/"+ruta);
         Log.d("query","Entrando en whereQuery()");
         reservas.clear();
@@ -179,8 +154,7 @@ public class MisReservasFragment extends Fragment {
         myRef2.orderByChild("userId").equalTo(user.getUid()).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String prevChildKey) {
-
-                if(addReserva(dataSnapshot.getKey(),dataSnapshot.getValue(Reserva.class))){
+                if(addReserva(dataSnapshot.getKey(),dataSnapshot.getValue(Reserva.class),ruta)){
                     for (int i=0;i<dataSnapshot.getValue(Reserva.class).getArticulos().size();i++){
                         descargarListaArticulos(dataSnapshot.getValue(Reserva.class).getArticulos().get(i), dataSnapshot.getValue(Reserva.class));
                     }
@@ -208,22 +182,14 @@ public class MisReservasFragment extends Fragment {
 
             }
         });
-        
+        cargando(false);
     }
-    /*
-    public void bajarReservas(){
-        //Hay que determinar la fecha actual
-        Fecha fecha = new Fecha();
-        whereQuery(fecha.getRutaVenta());
-        fecha.setFecha(fecha.sumarDias(fecha.getFecha(),1));
-        String ruta = fecha.getRutaVenta();
-        whereQuery(ruta);
-    }*/
+
 
     public void setPopUpMenu(View v){
         PopMenuLayout popMenuLayout = (PopMenuLayout) v.findViewById(R.id.popMenuLayout);
 
-        String confJson = new Herramientas().getConfJson();
+        String confJson = new Herramientas().getConfJsonCliente();
 
         popMenuLayout.setConfigJson(confJson);
 
@@ -233,6 +199,12 @@ public class MisReservasFragment extends Fragment {
             public void onMenuClick(int level1Index, int level2Index, int level3Index) {
 
                 gestionMenu(""+level1Index+level2Index);
+
+                if(dia==-1){
+                    todosDias= true;
+                }else{
+                    todosDias= false;
+                }
 
                 realizarConsulta();
 
@@ -244,21 +216,6 @@ public class MisReservasFragment extends Fragment {
         // Bind adapter to recycler view object
 
         adapter = new ComplexRecyclerViewAdapter(reservas);
-
-        adapter.setOnItemClickListener(new ComplexRecyclerViewAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                Log.d("query",""+view.getId()+"  "+position);
-                Reserva aux = (Reserva) reservas.get(position);
-                String texto;
-                if(aux.getEstado().equals("Por confirmar")){
-                    texto = "Uno de nuestros vendedores reservará tu pedido";
-                }else{
-                    texto = "Dirígete a un vendedor para completar la compra";
-                }
-                sacarSnackBar(texto);
-            }
-        });
 
         recyclerView.setAdapter(adapter);
 
@@ -293,7 +250,7 @@ public class MisReservasFragment extends Fragment {
         return fecha.getRutaVenta();
     }
 
-    public boolean addReserva(String key, Reserva newValue){
+    public boolean addReserva(String key, Reserva newValue, String ruta){
 
         boolean add = true;
 
@@ -305,6 +262,9 @@ public class MisReservasFragment extends Fragment {
 
         if (add){
             reservasNoNull();
+            Fecha fecha = new Fecha();
+            newValue.setValidez(fecha.fechaPreparada(ruta,false));
+            newValue.setMisReservas(true);
             reservas.add(newValue);
             keys.add(key);
         }
@@ -375,9 +335,38 @@ public class MisReservasFragment extends Fragment {
             aux.setTextoArticulos(articulosStr);
             reservas.remove(posicion);
             reservas.add(posicion, aux);
+            guardarCacheReservas();
+            if(todosDias){
+                rellenarReservasTodosDias();
+            }
+            cargando(false);
+            filtrarPorEstado();
+            quitarSobrantes();
+            if(reservas.size()==0){
+                reservas.add("No hay reservas");
+            }
             adapter.notifyDataSetChanged();
 
 
+    }
+
+    public void guardarCacheReservas(){
+        if (dia == HOY){
+            reservasHoy.addAll(reservas);
+        }else{
+            reservasManana.addAll(reservas);
+        }
+
+    }
+
+    public void rellenarReservasTodosDias(){
+        reservas.clear();
+        for(int i=0;i<reservasHoy.size();i++){
+            reservas.add(reservasHoy.get(i));
+        }
+        for(int i=0;i<reservasManana.size();i++){
+            reservas.add(reservasManana.get(i));
+        }
     }
 
     public void checkArticulos(Reserva reserva){
@@ -440,7 +429,7 @@ public class MisReservasFragment extends Fragment {
     }
 
     public void setTextoQuery(){
-        TextView txt = (TextView) v.findViewById(R.id.txt_query);
+
         String diaStr;
         String texto;
         if (dia == HOY){
@@ -450,17 +439,76 @@ public class MisReservasFragment extends Fragment {
         }
         String estadoStr;
         if(estadoQ==PROCESO){
-            estadoStr = "por confirmar";
+            estadoStr = "pendientes";
         }else{
-            estadoStr = "reserva confirmada";
+            estadoStr = "ya disponibles";
         }
-        texto = "Reservas para "+diaStr+" y"+ " "+estadoStr;
+
+        texto = "Reservado hasta "+diaStr+" y"+ " "+estadoStr;
+
+        if(todosDias){
+            texto = "Reservas "+estadoStr;
+        }
+
+        TextView txt = (TextView) v.findViewById(R.id.txt_query);
         txt.setText(texto);
+
     }
 
     public void sacarSnackBar(String texto){
         Snackbar.make(v.getRootView(), texto, Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show();
+    }
+
+    public void cargando(boolean cargando){
+        if (cargando){
+            gif.setVisibility(View.VISIBLE);
+        }else{
+            gif.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    public void bajarTodosDatos(){
+        todosDias = true;
+        dia = HOY;
+        realizarConsulta();
+        dia = MANANA;
+        realizarConsulta();
+        dia = -1;
+
+    }
+
+    public void filtrarPorEstado() {
+        if (estadoQ == PROCESO) {
+            for (int i = 0; i < reservas.size(); i++) {
+                Reserva aux = (Reserva) reservas.get(i);
+                if (aux.getEstado().equals("Reserva confirmada")) {
+                    reservas.remove(i);
+                    i--;
+                }
+            }
+        } else {
+            for (int i = 0; i < reservas.size(); i++) {
+                Reserva aux = (Reserva) reservas.get(i);
+                if (aux.getEstado().equals("Por confirmar")) {
+                    reservas.remove(i);
+                    i--;
+                }
+            }
+        }
+
+    }
+
+    public void quitarSobrantes(){
+        for (int i = 0; i < reservas.size(); i++) {
+            Reserva aux = (Reserva) reservas.get(i);
+            String id = aux.getIdentificador();
+            for(int j=i+1;j<reservas.size();j++)
+            if (aux.getIdentificador().equals(id)) {
+                reservas.remove(j);
+                j--;
+            }
+        }
     }
 
 

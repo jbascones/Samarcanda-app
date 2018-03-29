@@ -56,8 +56,61 @@ public class Herramientas {
             "  ]" +
             "}";
 
+    String confJsonCliente = "{" +
+            "  \"menus\" : [" +
+            "    {" +
+            "      \"index\" : \"0\"," +
+            "      \"expandable\" : true," +
+            "      \"text\" : \"Reservado hasta\"," +
+            "      \"child\" : [" +
+            "        {" +
+            "          \"index\" : \"00\"," +
+            "          \"expandable\" : false," +
+            "          \"text\" : \"Hoy\"" +
+            "        }," +
+            "        {" +
+            "          \"index\" : \"01\"," +
+            "          \"expandable\" : false," +
+            "          \"text\" : \"Mañana\"" +
+            "        }"+
+            "      ]"+
+            "    }," +
+            "    {" +
+            "      \"index\" : \"1\"," +
+            "      \"expandable\" : true," +
+            "      \"text\" : \"Estado\"," +
+            "      \"child\" : [" +
+            "        {" +
+            "          \"index\" : \"10\"," +
+            "          \"expandable\" : false," +
+            "          \"text\" : \"Pendiente\"" +
+            "        }," +
+            "        {" +
+            "          \"index\" : \"11\"," +
+            "          \"expandable\" : false," +
+            "          \"text\" : \"Ya disponible\"," +
+            "          \"child\" : [" +
+            "            {" +
+            "              \"index\" : \"110\"," +
+            "              \"expandable\" : false," +
+            "              \"text\" : \"Child Menu 210\"" +
+            "            }," +
+            "            {" +
+            "              \"index\" : \"111\"," +
+            "              \"expandable\" : false," +
+            "              \"text\" : \"Child Menu 211\"" +
+            "            }" +
+            "          ]" +
+            "        }" +
+            "      ]" +
+            "    }" +
+            "  ]" +
+            "}";
+
     public String getConfJson(){
         return confJson;
     }
+
+    public String getConfJsonCliente(){return confJsonCliente;}
 
 }

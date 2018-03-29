@@ -15,6 +15,8 @@ public class Reserva {
     public String userName;
     public String textoArticulos;
     public String identificador;
+    public boolean misReservas;
+    public String validez;
 
 
 
@@ -23,6 +25,7 @@ public class Reserva {
     //Es necesario un constructor sin argumentos para que se pueda crear el objeto a partir de los datos bajados
     public Reserva(){
         articulos = new ArrayList<String>();
+        misReservas=false;
     }
 
     public List<String> getArticulos() {
@@ -71,6 +74,22 @@ public class Reserva {
 
     public String getIdentificador() {
         return identificador;
+    }
+
+    public boolean isMisReservas() {
+        return misReservas;
+    }
+
+    public void setMisReservas(boolean misReservas) {
+        this.misReservas = misReservas;
+    }
+
+    public String getValidez() {
+        return validez;
+    }
+
+    public void setValidez(String validez) {
+        this.validez = validez;
     }
 
     public void setIdentificador(String identificador) {

@@ -15,6 +15,7 @@
             android:layout_height="wrap_content"
             android:text="Anterior"
             android:layout_toLeftOf="@+id/dia_actual"
+            android:theme="@style/ThemeOverlay.MyDarkButton"
             />
 
         <Button
@@ -23,6 +24,7 @@
             android:layout_height="wrap_content"
             android:text="Hoy"
             android:layout_centerHorizontal="true"
+            android:theme="@style/ThemeOverlay.MyDarkButton"
              />
 
     <Button
@@ -31,6 +33,7 @@
         android:layout_height="wrap_content"
         android:text="Siguiente"
         android:layout_toRightOf="@+id/dia_actual"
+        android:theme="@style/ThemeOverlay.MyDarkButton"
         />
 
     <android.support.design.widget.CoordinatorLayout

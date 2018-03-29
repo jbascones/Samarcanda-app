@@ -54,6 +54,15 @@ public class ViewHolderReserva extends RecyclerView.ViewHolder {
 
     }
 
+    public ViewHolderReserva(View v) {
+        super(v);
+        label1 = (TextView) v.findViewById(R.id.text1);
+        label2 = (TextView) v.findViewById(R.id.text2);
+        label3 = (TextView) v.findViewById(R.id.text3);
+
+
+    }
+
     public TextView getLabel1() {
         return label1;
     }

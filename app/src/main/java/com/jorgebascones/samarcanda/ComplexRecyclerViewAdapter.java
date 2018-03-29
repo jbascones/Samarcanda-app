@@ -141,8 +141,12 @@ public class ComplexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                 viewHolder = new ViewHolderArticulo(v7, listener);
                 break;
             case RESERVA:
-                View v8 = inflater.inflate(R.layout.viewholder_reserva, viewGroup, false);
-                viewHolder = new ViewHolderReserva(v8, listener);
+                View v8 = inflater.inflate(getLayoutReserva(), viewGroup, false);
+                if(getLayoutReserva()==R.layout.viewholder_reserva){
+                    viewHolder = new ViewHolderReserva(v8, listener);
+                }else{
+                    viewHolder = new ViewHolderReserva(v8);
+                }
                 break;
             default:
                 v1 = inflater.inflate(R.layout.viewholder_venta, viewGroup, false);
@@ -233,13 +237,22 @@ public class ComplexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         if (reserva != null) {
             vh8.getLabel1().setText(reserva.getTextoArticulos());
             vh8.getLabel2().setText("Estado: "+reserva.getEstado());
-            if(reserva.getEstado().equals("Por confirmar")){
-                vh8.getButton().setText("Confirmar reserva");
+            if(!reserva.isMisReservas()){
+                if(reserva.getEstado().equals("Por confirmar")){
+                    vh8.getButton().setText("Confirmar reserva");
+                }else{
+                    vh8.getButton().setText("Completar venta");
+                }
+                vh8.getLabel3().setText(reserva.getUserName());
             }else{
-                vh8.getButton().setText("Completar venta");
+                vh8.getLabel2().setText("Reserva válida hasta el "+reserva.getValidez());
+                if(reserva.getEstado().equals("Por confirmar")){
+                    vh8.getLabel3().setText("Reserva pendiente");
+                }else{
+                    vh8.getLabel3().setText("Reserva ya disponible");
+                }
+
             }
-            //Fecha fecha = new Fecha();
-            vh8.getLabel3().setText(reserva.getUserName());
         }
     }
 
@@ -338,6 +351,15 @@ public class ComplexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         items.addAll(nuevaLista);
         notifyDataSetChanged();
 
+    }
+
+    private int getLayoutReserva(){
+        Reserva reserva = (Reserva) items.get(0);
+        if(reserva.isMisReservas()){
+            return R.layout.viewholder_mi_reserva;
+        }else{
+            return R.layout.viewholder_reserva;
+        }
     }
 
 

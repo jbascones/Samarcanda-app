@@ -52,10 +52,9 @@
         android:orientation="vertical">
 
 
+        <RelativeLayout
 
-        <FrameLayout
-
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
 
@@ -64,8 +63,18 @@
                 android:layout_width="160dp"
                 android:layout_height="160dp"
                 android:padding="4dp"
-                android:scaleType="centerCrop" />
-        </FrameLayout>
+
+                />
+
+            <ImageView
+                android:id="@+id/codigo_qr"
+                android:layout_width="160dp"
+                android:layout_height="160dp"
+                android:layout_alignParentTop="true"
+                android:layout_toEndOf="@+id/id_card_foto"
+                android:layout_toRightOf="@+id/id_card_foto"
+                 />
+        </RelativeLayout>
 
 
         <RelativeLayout
@@ -92,15 +101,6 @@
                 app:side_to_side_max_duration="7000"
                 app:side_to_side_direction="downToUp"
                 />
-
-            <Button
-                android:id="@+id/id_card_botonCambio"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Button"
-                android:theme="@style/ThemeOverlay.MyDarkButton"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true" />
 
             <TextView
                 android:id="@+id/nombreText"

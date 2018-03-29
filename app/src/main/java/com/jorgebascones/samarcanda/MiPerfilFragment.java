@@ -47,7 +47,6 @@ public class MiPerfilFragment extends Fragment {
     private String miNombre;
     private String miUserId;
     private String miUrl;
-    private String estado;
     private SquareProgressBar squareProgressBar;
     private FirebaseDatabase database;
     DatabaseReference myRef;
@@ -100,8 +99,6 @@ public class MiPerfilFragment extends Fragment {
 
         ((MainActivity) getActivity()).getSupportActionBar().setTitle("Mi Perfil");
 
-        Button buttonQr = (Button) view.findViewById(R.id.id_card_botonCambio);
-
         TextView nombre = (TextView)view.findViewById(R.id.nombreText);
         nombre.setText("Nombre");
         TextView mail = (TextView)view.findViewById(R.id.segundoCampo);
@@ -113,22 +110,9 @@ public class MiPerfilFragment extends Fragment {
 
         database = FirebaseDatabase.getInstance();
 
+        colocarQR(view);
 
-
-
-        buttonQr.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(estado.equals("foto")){
-                    colocarQR(view);
-
-                }else{
-                    colocarFoto(view);
-                }
-
-
-            }
-        });
+        colocarFoto(view);
 
         setProgressSquare(view);
 
@@ -179,14 +163,11 @@ public class MiPerfilFragment extends Fragment {
 
     public void colocarQR(View view){
 
-        ImageView imageView = (ImageView) view.findViewById(R.id.id_card_foto);
+        ImageView imageView = (ImageView) view.findViewById(R.id.codigo_qr);
         CreaQr creaQr = new CreaQr();
         Bitmap bitmap = creaQr.generarQR("USER:"+miUserId);
         imageView.setImageBitmap(bitmap);
 
-        estado = "qr";
-
-        cambiarBoton(view,"Ver foto");
 
 
     }
@@ -198,16 +179,8 @@ public class MiPerfilFragment extends Fragment {
 
         Picasso.with(c).load(miUrl).into(imagen);
 
-        estado = "foto";
-
-        cambiarBoton(view,"Ver mi código");
-
     }
 
-    public void cambiarBoton(View view, String texto){
-        Button boton = (Button) view.findViewById(R.id.id_card_botonCambio);
-        boton.setText(texto);
-    }
 
     public void rellenarTarjeta(View view){
         User yo = new User();
@@ -312,29 +285,13 @@ public class MiPerfilFragment extends Fragment {
             txt.setText("DESCUENTO DE 5€");
             rellenarTarjeta(view);
             colocarFoto(view);
-            setDescuentoListener();
+            colocarQR(view);
             rootView.addView(view);
         }catch (Exception e){
             Log.d("crash","Problema con tarheta de descuento");
         }
     }
 
-    public void setDescuentoListener(){
-        Button boton = (Button) view.findViewById(R.id.id_card_botonCambio);
-        boton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(estado.equals("foto")){
-                    colocarQR(view);
-
-                }else{
-                    colocarFoto(view);
-                }
-
-
-            }
-        });
-    }
 
 
 }
