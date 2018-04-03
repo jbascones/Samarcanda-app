@@ -120,6 +120,8 @@ public class MainActivity extends AppCompatActivity
     private final int MI_PERFIL = "mi perfil".hashCode();
     private final int MIS_RESERVAS = "mis reservas".hashCode();
 
+    private Menu optionsMenu;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -212,6 +214,8 @@ public class MainActivity extends AppCompatActivity
         // Inflate the menu; this adds items to the action bar if it is present.
         construirMenu(menu);
         getMenuInflater().inflate(R.menu.main, menu);
+        optionsMenu = menu;
+        setOptions();
         return true;
     }
     //TODO: menu propio de cada fragment
@@ -241,6 +245,18 @@ public class MainActivity extends AppCompatActivity
 
 
             return true;
+        } else if(id=="simulador".hashCode()){
+            SimuladorFragment simuladorFragment = new SimuladorFragment();
+
+            FragmentManager manager = getSupportFragmentManager();
+
+            manager.beginTransaction().replace(R.id.main_fragmento,
+                    simuladorFragment,
+                    simuladorFragment.getTag()
+            ).commit();
+
+
+            fragmenActual = "simulador";
         }
 
         return super.onOptionsItemSelected(item);
@@ -1056,6 +1072,12 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
+    public void setOptions(){
+        if(isVendedor){
+            optionsMenu.add(Menu.NONE, "simulador".hashCode(), Menu.NONE, "Simulador")
+                    .setIcon(android.R.drawable.ic_menu_preferences);
+        }
+    }
 
 
 

@@ -1,11 +1,9 @@
 package com.jorgebascones.samarcanda;
 
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +19,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.jorgebascones.samarcanda.Modelos.Fecha;
 import com.jorgebascones.samarcanda.Modelos.Punto;
-import com.jorgebascones.samarcanda.Modelos.Venta;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -30,14 +27,12 @@ import java.util.List;
 import lecho.lib.hellocharts.gesture.ZoomType;
 import lecho.lib.hellocharts.model.Axis;
 import lecho.lib.hellocharts.model.AxisValue;
-import lecho.lib.hellocharts.model.ColumnChartData;
 import lecho.lib.hellocharts.model.Line;
 import lecho.lib.hellocharts.model.LineChartData;
 import lecho.lib.hellocharts.model.PointValue;
 import lecho.lib.hellocharts.model.ValueShape;
 import lecho.lib.hellocharts.util.ChartUtils;
 import lecho.lib.hellocharts.view.LineChartView;
-import lecho.lib.hellocharts.listener.LineChartOnValueSelectListener;
 
 
 /**
@@ -71,6 +66,7 @@ public class GraficasFragment extends Fragment {
     List<AxisValue> axisValues = new ArrayList<AxisValue>();
     private int mesOffset;
     Fecha f;
+    private String rutaMes;
     //private LineChartData lineData;
 
 
@@ -83,7 +79,9 @@ public class GraficasFragment extends Fragment {
 
         ((MainActivity) getActivity()).getSupportActionBar().setTitle("Ventas por día");
 
+        f = new Fecha();
         mesOffset = 0;
+        condicionInicialRutaMes();
         setListeners(view);
         chart = (LineChartView) view.findViewById(R.id.chart);
         chart.setZoomType(ZoomType.HORIZONTAL);
@@ -91,7 +89,7 @@ public class GraficasFragment extends Fragment {
         //gestionChart();
         //generateValues();
         //generateData();
-        f = new Fecha();
+
         descargarListaVentas(f.sumarMesRuta(mesOffset));
 
         return view;
@@ -126,9 +124,9 @@ public class GraficasFragment extends Fragment {
                 try {
                     String dia;
                     if(diaInt>9){
-                        dia = f.getDiaSemana("2018/03/"+diaInt);
+                        dia = f.getDiaSemana(rutaMes+"/"+diaInt);
                     }else{
-                        dia = f.getDiaSemana("2018/03/0"+diaInt);
+                        dia = f.getDiaSemana(rutaMes+"/0"+diaInt);
                     }
 
                     axisValues.add(new AxisValue(j).setLabel(diaInt+dia));
@@ -214,8 +212,8 @@ public class GraficasFragment extends Fragment {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
                 for (DataSnapshot childDataSnapshot : dataSnapshot.getChildren()) {
-                    Log.v("Funciona",""+ childDataSnapshot.getKey()); //displays the key for the node
-                    Log.v("Funciona",""+ childDataSnapshot.getValue());
+                    //Log.v("Funciona",""+ childDataSnapshot.getKey()); //displays the key for the node
+                    //Log.v("Funciona",""+ childDataSnapshot.getValue());
                     Fecha fecha = new Fecha();
                     Punto p = new Punto(fecha.StringToInt((fecha.StringToInt(childDataSnapshot.getKey())-1)+""),fecha.StringToInt(childDataSnapshot.getValue().toString()));
                     randomNumbersTab[0][p.getX()]= p.getY();
@@ -233,19 +231,19 @@ public class GraficasFragment extends Fragment {
 
     public void inicializarArrayMes(){
         Fecha fecha = new Fecha();
-        randomNumbersTab  = new float[maxNumberOfLines][fecha.StringToInt(fecha.getDiaMesAnterior(fecha.getMes(fecha.getFecha())))];
+        int numeroDias = fecha.StringToInt(fecha.getDiaMesAnterior(rutaMes.substring(5)));
+        numberOfPoints = numeroDias;
+        randomNumbersTab  = new float[maxNumberOfLines][numeroDias];
     }
 
     public void setListeners(View v){
-        final Button buttonActual = (Button) v.findViewById(R.id.id_botonVerVentas);
+        final Button buttonActual = (Button) v.findViewById(R.id.id_boton_simular);
 
 
         buttonActual.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                //generateValues();
-                //generateData();
 
             }
         });
@@ -257,24 +255,30 @@ public class GraficasFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 mesOffset --;
-                descargarListaVentas(f.sumarMesRuta(mesOffset));
+                rutaMes = f.sumarMesRuta(mesOffset);
+                descargarListaVentas(rutaMes);
                 buttonActual.setText(f.mes+"/"+f.anno);
 
             }
         });
 
-        Button mesSiguiente = (Button) v.findViewById(R.id.id_mes_siguiente);
+        Button mesSiguiente = (Button) v.findViewById(R.id.id_mes_actual);
 
 
         mesSiguiente.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mesOffset ++;
-                descargarListaVentas(f.sumarMesRuta(mesOffset));
+                rutaMes = f.sumarMesRuta(mesOffset);
+                descargarListaVentas(rutaMes);
                 buttonActual.setText(f.mes+"/"+f.anno);
 
             }
         });
+    }
+
+    public void condicionInicialRutaMes(){
+        rutaMes = f.sumarMesRuta(0);
     }
 
 

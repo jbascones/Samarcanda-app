@@ -379,15 +379,20 @@ public class MisReservasFragment extends Fragment {
 
         if(todos){
             int posicion=-1;
-            for(int i=0;i<reservas.size();i++){
-                Reserva aux = (Reserva) reservas.get(i);
-                String id1 = aux.getIdentificador();
-                String id2 = reserva.getIdentificador();
-                if(id1.equals(id2)){
-                    posicion= i;
-                }
+            try{
+                for(int i=0;i<reservas.size();i++){
+                    Reserva aux = (Reserva) reservas.get(i);
+                    String id1 = aux.getIdentificador();
+                    String id2 = reserva.getIdentificador();
+                    if(id1.equals(id2)){
+                        posicion= i;
+                    }
 
+                }
+            }catch (Exception e){
+                Log.d("crash","Casting String a reserva");
             }
+
             if(posicion!=-1){
                 rellenarReservas(posicion);
             }
@@ -499,14 +504,16 @@ public class MisReservasFragment extends Fragment {
 
     }
 
-    public void quitarSobrantes(){
+    public void quitarSobrantes() {
         for (int i = 0; i < reservas.size(); i++) {
             Reserva aux = (Reserva) reservas.get(i);
             String id = aux.getIdentificador();
-            for(int j=i+1;j<reservas.size();j++)
-            if (aux.getIdentificador().equals(id)) {
-                reservas.remove(j);
-                j--;
+            for (int j = i + 1; j < reservas.size(); j++) {
+                Reserva aux2 = (Reserva) reservas.get(j);
+                if (aux2.getIdentificador().equals(id)) {
+                    reservas.remove(j);
+                    j--;
+                }
             }
         }
     }

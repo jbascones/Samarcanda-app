@@ -10,7 +10,7 @@
         android:layout_height="match_parent">
 
         <Button
-            android:id="@+id/id_botonVerVentas"
+            android:id="@+id/id_boton_simular"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
@@ -26,24 +26,24 @@
             android:text="anterior"
             android:theme="@style/ThemeOverlay.MyDarkButton"
             android:layout_alignParentTop="true"
-            android:layout_toLeftOf="@+id/id_botonVerVentas"
-            android:layout_toStartOf="@+id/id_botonVerVentas" />
+            android:layout_toLeftOf="@+id/id_boton_simular"
+            android:layout_toStartOf="@+id/id_boton_simular" />
         <Button
-            android:id="@+id/id_mes_siguiente"
+            android:id="@+id/id_mes_actual"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
             android:text="siguiente"
             android:theme="@style/ThemeOverlay.MyDarkButton"
             android:layout_alignParentTop="true"
-            android:layout_toRightOf="@+id/id_botonVerVentas"
-            android:layout_toEndOf="@+id/id_botonVerVentas" />
+            android:layout_toRightOf="@+id/id_boton_simular"
+            android:layout_toEndOf="@+id/id_boton_simular" />
 
         <lecho.lib.hellocharts.view.LineChartView
             android:id="@+id/chart"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/id_botonVerVentas"
+            android:layout_below="@+id/id_boton_simular"
             android:layout_above="@+id/id_cambiar" />
         <Button
             android:id="@+id/id_cambiar"

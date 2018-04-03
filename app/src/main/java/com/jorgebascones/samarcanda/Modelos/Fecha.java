@@ -214,13 +214,11 @@ public class Fecha {
 
         int anno = StringToInt(getAnno(fecha));
 
-        if(mes>12){
-            mes = 1;
-            anno = anno +1;
-        }else if(mes==0){
-            mes = 12;
-            anno = anno -1;
-        }
+        int [] datos = sumarMesBucle(mes, anno);
+
+        anno = datos[1];
+        mes = datos[0];
+
         String mesStr = mes + "";
         if(mesStr.length()==1){
             mesStr = "0" + mesStr;
@@ -228,6 +226,30 @@ public class Fecha {
         this.mes = mesStr;
         this.anno = anno + "";
         return anno+"/"+mesStr;
+    }
+
+    public int [] sumarMesBucle(int mes, int anno){
+
+        if(mes > 12){
+            mes = mes -12;
+            anno = anno +1;
+        }else if(mes==0){
+            mes = 12;
+            anno = anno -1;
+        }else if(mes<0){
+            mes = mes +12;
+            anno = anno -1;
+        }
+
+        int [] datos = {mes, anno};
+
+        if(mes > 12 || mes<1){
+            datos = sumarMesBucle(mes, anno);
+        }else{
+            return datos;
+        }
+        return datos;
+
     }
 
 }

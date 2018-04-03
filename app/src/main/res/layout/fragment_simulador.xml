@@ -1,0 +1,149 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.jorgebascones.samarcanda.VentaFragment">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/txt_simular_r"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/button_ir_graficas"
+            android:layout_alignParentTop="true"
+            android:layout_alignStart="@+id/button_ir_graficas"
+            android:gravity="center"
+            android:text="SIMULAR RESERVAS"
+            android:textColor="@color/colorPrimary"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txt_simular_r"
+            android:id="@+id/layout_simular_reservas">
+
+            <Button
+                android:id="@+id/id_reservas_manana"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center"
+                android:text="Mañana"
+                android:theme="@style/ThemeOverlay.MyDarkButton"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true" />
+            <Button
+                android:id="@+id/id_reservas_hoy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center"
+                android:text="Hoy"
+                android:theme="@style/ThemeOverlay.MyDarkButton"
+                android:layout_alignParentTop="true"
+                android:layout_toLeftOf="@+id/id_reservas_manana"
+                android:layout_toStartOf="@+id/id_reservas_manana" />
+            <Button
+                android:id="@+id/id_reservas_ambos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center"
+                android:text="Ambos"
+                android:theme="@style/ThemeOverlay.MyDarkButton"
+                android:layout_alignParentTop="true"
+                android:layout_toRightOf="@+id/id_reservas_manana"
+                android:layout_toEndOf="@+id/id_reservas_manana" />
+
+            <Button
+                android:id="@+id/id_boton_simular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center"
+                android:text="Simular reservas"
+                android:theme="@style/ThemeOverlay.MyDarkButton"
+                android:layout_below="@+id/numero_reservas_simuladas"
+                android:layout_alignRight="@+id/numero_reservas_simuladas"
+                android:layout_alignEnd="@+id/numero_reservas_simuladas"
+                android:layout_alignLeft="@+id/numero_reservas_simuladas"
+                android:layout_alignStart="@+id/numero_reservas_simuladas" />
+
+            <EditText
+                android:id="@+id/numero_reservas_simuladas"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="number"
+                android:layout_below="@+id/id_reservas_manana"
+                android:layout_centerHorizontal="true" />
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/txt_simular_v"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="SIMULAR VENTAS"
+            android:textColor="@color/colorPrimary"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_below="@id/layout_simular_reservas"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txt_simular_v">
+
+            <Button
+                android:id="@+id/id_mes_actual"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="bottom|center"
+                android:text="Actual"
+                android:theme="@style/ThemeOverlay.MyDarkButton" />
+
+            <Button
+                android:id="@+id/mes_anterior"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_gravity="bottom|center"
+                android:layout_toLeftOf="@+id/id_mes_actual"
+                android:layout_toStartOf="@+id/id_mes_actual"
+                android:text="Anterior"
+                android:theme="@style/ThemeOverlay.MyDarkButton" />
+
+            <Button
+                android:id="@+id/id_mes_siguiente"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_gravity="bottom|center"
+                android:layout_toEndOf="@+id/id_mes_actual"
+                android:layout_toRightOf="@+id/id_mes_actual"
+                android:text="Siguiente"
+                android:theme="@style/ThemeOverlay.MyDarkButton" />
+
+            <Button
+                android:id="@+id/id_boton_simular_ventas"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/mes_anterior"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="bottom|center"
+                android:text="Simular ventas"
+                android:theme="@style/ThemeOverlay.MyDarkButton" />
+
+        </RelativeLayout>
+
+
+
+
+    </RelativeLayout>
+
+</FrameLayout>

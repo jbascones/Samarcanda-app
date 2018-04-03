@@ -113,4 +113,10 @@ public class Herramientas {
 
     public String getConfJsonCliente(){return confJsonCliente;}
 
+    public int random(int max){
+        return (int) (Math.random() * max);
+    }
+
+
+
 }
