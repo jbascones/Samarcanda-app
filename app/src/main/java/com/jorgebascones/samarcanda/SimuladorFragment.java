@@ -123,8 +123,10 @@ public class SimuladorFragment extends Fragment {
                 for (DataSnapshot childDataSnapshot : dataSnapshot.getChildren()) {
                     Log.v("Funciona",""+ childDataSnapshot.getKey()); //displays the key for the node
                     Log.v("Funciona",""+ childDataSnapshot.getValue());
-                    users.add(childDataSnapshot.getValue(User.class));
-
+                    User userBajado = childDataSnapshot.getValue(User.class);
+                    if(!userBajado.getUsuarioId().equals(user.getUid())){
+                        users.add(userBajado);
+                    }
                 }
 
             }
@@ -208,8 +210,9 @@ public class SimuladorFragment extends Fragment {
         Reserva reserva = new Reserva();
         addArticulosReservados(reserva);
         reserva.setEstado("Por confirmar");
-        reserva.setUserId(users.get(h.random(users.size())).getUsuarioId());
-        reserva.setUserName(user.getDisplayName());
+        User randomUser = users.get(h.random(users.size()));
+        reserva.setUserId(randomUser.getUsuarioId());
+        reserva.setUserName(randomUser.getNombre());
         String key = myRef.child("/reservas/"+ruta+"/").push().getKey();
         reserva.setIdentificador(key);
         myRef.child("/reservas/"+ruta+"/"+key+"/").setValue(reserva);

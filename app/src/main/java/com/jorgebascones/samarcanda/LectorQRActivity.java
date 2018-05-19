@@ -170,7 +170,9 @@ public class LectorQRActivity extends AppCompatActivity implements ZXingScannerV
             venta.setImporte(calcularPrecio());
             Log.d(TAG,"Importe "+venta.getImporte());
             prepararObjetoVenta();
-            myRef.child("/ventas/"+fechaVenta.getRutaVenta()).push().setValue(venta);
+            String keyPush = myRef.child("/ventas/"+fechaVenta.getRutaVenta()).push().getKey();
+            myRef.child("/ventas/"+fechaVenta.getRutaVenta()+"/"+keyPush).setValue(venta);
+            myRef.child("/ventas/mis compras/"+venta.getClienteId()).push().setValue(fechaVenta.getRutaVenta()+"/"+keyPush);
             Toast.makeText(getApplicationContext(),"Venta confirmada",Toast.LENGTH_SHORT).show();
             finish();
         }else{

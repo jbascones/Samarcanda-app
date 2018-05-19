@@ -5,25 +5,36 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.jorgebascones.samarcanda.Modelos.Post;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -37,8 +48,9 @@ import static android.app.Activity.RESULT_OK;
  */
 public class SubirPost extends Fragment {
 
-    private Button btnChoose, btnUpload;
+    private Button btnChoose, btnUpload, btnEnviar;
     private ImageView imageView;
+    public Post post;
 
     private Uri filePath;
 
@@ -47,6 +59,8 @@ public class SubirPost extends Fragment {
     Bitmap bitmap;
 
     private final int PICK_IMAGE_REQUEST = 71;
+
+    private View v;
 
     //Firebase
     FirebaseStorage storage;
@@ -89,7 +103,24 @@ public class SubirPost extends Fragment {
 
         c = getActivity().getApplicationContext();
 
+        setHasOptionsMenu(true);
+
+        btnUpload.setVisibility(View.INVISIBLE);
+
+        v=view;
+
+        post = new Post();
+
         return view;
+    }
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // TODO Add your menu entries here
+        menu.add(Menu.NONE, 1, Menu.NONE, "Rotar a la izquierda")
+                .setIcon(android.R.drawable.ic_menu_preferences);
+        menu.add(Menu.NONE, 2, Menu.NONE, "Rotar a la derecha")
+                .setIcon(android.R.drawable.ic_menu_preferences);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
 
@@ -99,7 +130,7 @@ public class SubirPost extends Fragment {
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
     }
-
+    /*
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -112,6 +143,31 @@ public class SubirPost extends Fragment {
                 bitmap = MediaStore.Images.Media.getBitmap(c.getContentResolver(), filePath);
                 bitmap = Bitmap.createScaledBitmap(bitmap, 100, 100, false);
                 imageView.setImageBitmap(bitmap);
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+        }
+    }*/
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 71 && resultCode == RESULT_OK
+                && data != null && data.getData() != null )
+        {
+            filePath = data.getData();
+            try {
+
+                bitmap = MediaStore.Images.Media.getBitmap(imageView.getContext().getContentResolver(), filePath);
+                int w = bitmap.getWidth();
+                double escalado = w/300;
+                int h = bitmap.getHeight();
+                double newH =h/escalado;
+                int hDef = (int) newH;
+                bitmap = Bitmap.createScaledBitmap(bitmap,300, hDef, false);
+                imageView.setImageBitmap(bitmap);
+                btnUpload.setVisibility(View.VISIBLE);
             }
             catch (IOException e)
             {
@@ -138,7 +194,7 @@ public class SubirPost extends Fragment {
 
 
             //StorageReference ref = storageReference.child("images/"+ UUID.randomUUID().toString());
-            String ruta = "perfil de jorge";
+            Long ruta =  System.currentTimeMillis();
             StorageReference ref = storageReference.child("images/"+ ruta);
             ref.putBytes(data)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -149,7 +205,13 @@ public class SubirPost extends Fragment {
                             Log.d("SubirPost","Uploaded");
                             @SuppressWarnings("VisibleForTests") Uri downloadUrl = taskSnapshot.getDownloadUrl();
                             Log.d("SubirPost",downloadUrl.toString());
+                            post.setUrlImagen(downloadUrl.toString());
                             imageView.setImageResource(R.drawable.ic_menu_send);
+                            setViewLayout(R.layout.fragment_subir_post_texto);
+                            setBtnEnviar();
+                            EditText cuerpoEtxt = (EditText) v.findViewById(R.id.editText2);
+                            cuerpoEtxt.setImeOptions(EditorInfo.IME_ACTION_DONE);
+                            cuerpoEtxt.setRawInputType(InputType.TYPE_CLASS_TEXT);
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
@@ -169,6 +231,75 @@ public class SubirPost extends Fragment {
                         }
                     });
         }
+    }
+    public void rotarImagen(int signo){
+        Matrix matrix = new Matrix();
+        matrix.postRotate(signo*90); // giro de 90 grados en contra del sentido del reloj
+        bitmap = Bitmap.createBitmap(bitmap , 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix,true);
+        imageView.setImageBitmap(bitmap);
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+        if (id == 1) {
+            rotarImagen(-1);
+            return true;
+        }
+        if (id == 2) {
+            rotarImagen(1);
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void setViewLayout(int id){
+        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        v = inflater.inflate(id, null);
+        ViewGroup rootView = (ViewGroup) getView();
+        rootView.removeAllViews();
+        rootView.addView(v);
+    }
+
+    public void setBtnEnviar(){
+        btnEnviar = (Button) v.findViewById(R.id.btnsend);
+        btnEnviar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                enviar();
+            }
+        });
+    }
+
+    public void enviar(){
+        EditText tituloEtxt = (EditText)v.findViewById(R.id.editText);
+        String titulo = tituloEtxt.getText().toString();
+        EditText cuerpoEtxt = (EditText) v.findViewById(R.id.editText2);
+        String cuerpo = cuerpoEtxt.getText().toString();
+        post.setTitulo(titulo);
+        post.setCuerpo(cuerpo);
+        subirAFirebase(post);
+    }
+    public void subirAFirebase(Object o){
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+        DatabaseReference myRef = database.getReference("/posts/");
+
+        myRef.push().setValue(o);
+
+        setViewLayout(R.layout.fragment_post_subido);
+
     }
 
 

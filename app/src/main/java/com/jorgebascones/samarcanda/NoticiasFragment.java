@@ -29,6 +29,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.jorgebascones.samarcanda.Modelos.Articulo;
 import com.jorgebascones.samarcanda.Modelos.Fecha;
+import com.jorgebascones.samarcanda.Modelos.Post;
 import com.jorgebascones.samarcanda.Modelos.Tiempo;
 import com.jorgebascones.samarcanda.Modelos.User;
 import com.jorgebascones.samarcanda.Modelos.Venta;
@@ -88,6 +89,8 @@ public class NoticiasFragment extends Fragment {
         }catch (Exception e){
             Log.d(TAG,"Problemas al descargar parte metereologico");
         }
+
+        descargarListaPosts();
 
 
         return view;
@@ -200,6 +203,42 @@ public class NoticiasFragment extends Fragment {
 
     }
 
+    public void descargarListaPosts(){
+
+        // Read from the database
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+        DatabaseReference myRef = database.getReference("/posts/");
+
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                for (DataSnapshot childDataSnapshot : dataSnapshot.getChildren()) {
+                    Log.v("Funciona",""+ childDataSnapshot.getKey()); //displays the key for the node
+                    Log.v("Funciona",""+ childDataSnapshot.getValue());
+                    addValue(childDataSnapshot.getKey(), childDataSnapshot.getValue(Post.class));
+
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                System.out.println("Failed to read value." + error.toException());
+            }
+        });
+    }
+
+    public void addValue(String key,Post post){
+        noticias.add(post);
+        Log.d("Noticias",noticias.toString());
+    }
 
 }
 

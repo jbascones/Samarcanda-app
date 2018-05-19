@@ -15,7 +15,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_alignTop="@+id/button3"
-        android:text="Contactless"
+        android:text="Pago con la app"
         android:textSize="15sp" />
 
 

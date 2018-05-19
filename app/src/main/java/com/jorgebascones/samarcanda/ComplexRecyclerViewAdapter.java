@@ -12,12 +12,14 @@ import com.jorgebascones.samarcanda.Modelos.CarritoItem;
 import com.jorgebascones.samarcanda.Modelos.Categoria;
 import com.jorgebascones.samarcanda.Modelos.Celda;
 import com.jorgebascones.samarcanda.Modelos.Fecha;
+import com.jorgebascones.samarcanda.Modelos.Post;
 import com.jorgebascones.samarcanda.Modelos.Reserva;
 import com.jorgebascones.samarcanda.Modelos.Tiempo;
 import com.jorgebascones.samarcanda.Modelos.Venta;
 import com.jorgebascones.samarcanda.viewholders.ViewHolderArticulo;
 import com.jorgebascones.samarcanda.viewholders.ViewHolderCategoria;
 import com.jorgebascones.samarcanda.viewholders.ViewHolderDataNull;
+import com.jorgebascones.samarcanda.viewholders.ViewHolderPost;
 import com.jorgebascones.samarcanda.viewholders.ViewHolderReserva;
 import com.jorgebascones.samarcanda.viewholders.ViewHolderTiempo;
 import com.jorgebascones.samarcanda.viewholders.ViewHolderVenta;
@@ -55,7 +57,7 @@ public class ComplexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     }
 
 
-    private final int VENTA = 0, NULL = 1, TIEMPO = 2, CARRITO = 3, CATEGORIA = 4, ARTICULO=5, CELDA= 6, RESERVA = 7;
+    private final int VENTA = 0, NULL = 1, TIEMPO = 2, CARRITO = 3, CATEGORIA = 4, ARTICULO=5, CELDA= 6, RESERVA = 7, POST=8;
 
     // Provide a suitable constructor (depends on the kind of dataset)
     public ComplexRecyclerViewAdapter(ArrayList<Object> items) {
@@ -88,6 +90,8 @@ public class ComplexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             return CELDA;
         }else if (items.get(position) instanceof Reserva) {
             return RESERVA;
+        }else if (items.get(position) instanceof Post) {
+            return POST;
         }
         return -1;
     }
@@ -118,7 +122,6 @@ public class ComplexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                 break;
             case TIEMPO:
                 View v3 = inflater.inflate(R.layout.viewholder_tiempo, viewGroup, false);
-                convertirATipo("Tiempo");
                 viewHolder = new ViewHolderTiempo(v3);
                 break;
             case CARRITO:
@@ -148,6 +151,10 @@ public class ComplexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                     viewHolder = new ViewHolderReserva(v8);
                 }
                 break;
+            case POST:
+                View v9 = inflater.inflate(R.layout.viewholder_post, viewGroup, false);
+                viewHolder = new ViewHolderPost(v9);
+                break;
             default:
                 v1 = inflater.inflate(R.layout.viewholder_venta, viewGroup, false);
                 viewHolder = new ViewHolderVenta(v1,ventas);
@@ -159,7 +166,11 @@ public class ComplexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         Venta venta = (Venta) items.get(position);
         if (venta != null) {
             vh1.getLabel1().setText("Articulo: " + venta.getNombresArticulos());
-            vh1.getLabel2().setText("Cliente: " + venta.getUser().getNombre());
+            if(venta.isMiCompra()){
+                vh1.getLabel2().setText("Importe: " + venta.getImporte()+" €");
+            }else{
+                vh1.getLabel2().setText("Cliente: " + venta.getUser().getNombre());
+            }
             Fecha fecha = new Fecha();
             vh1.getLabel3().setText("Fecha: "+fecha.fechaPreparada(venta.getFecha(), true));
         }
@@ -174,13 +185,13 @@ public class ComplexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     }
 
     private void configureViewHolderTiempo(ViewHolderTiempo vh3, int position) {
-
-        vh3.getLabel1().setText(tiempo.getTitulo());
-        vh3.getLabel2().setText(tiempo.getSubtitulo());
-        vh3.getLabel4().setText(tiempo.getTemperatura()+"ºC");
+        Tiempo t = (Tiempo) items.get(position);
+        vh3.getLabel1().setText(t.getTitulo());
+        vh3.getLabel2().setText(t.getSubtitulo());
+        vh3.getLabel4().setText(t.getTemperatura()+"ºC");
         Context c = vh3.getLabel1().getContext();
 
-        Picasso.with(c).load(tiempo.getPhotoURL()).into(vh3.getIcono());
+        Picasso.with(c).load(t.getPhotoURL()).into(vh3.getIcono());
 
     }
 
@@ -256,6 +267,17 @@ public class ComplexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         }
     }
 
+    private void configureViewHolderPost(ViewHolderPost vh9, int position) {
+        Post p = (Post) items.get(position);
+        vh9.getTitulo().setText(p.getTitulo());
+        vh9.getCuerpo().setText(p.getCuerpo());
+        vh9.getIcono().setImageDrawable(ContextCompat.getDrawable(vh9.getIcono().getContext(), R.drawable.inicio));
+        Context context = vh9.getTitulo().getContext();
+
+        Picasso.with(context).load(p.getUrlImagen()).into(vh9.getIcono());
+
+    }
+
     /**
      * This method internally calls onBindViewHolder(ViewHolder, int) to update the
      * RecyclerView.ViewHolder contents with the item at the given position
@@ -298,6 +320,10 @@ public class ComplexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             case RESERVA:
                 ViewHolderReserva vh8 = (ViewHolderReserva) viewHolder;
                 configureViewHolderReserva(vh8, position);
+                break;
+            case POST:
+                ViewHolderPost vh9 = (ViewHolderPost) viewHolder;
+                configureViewHolderPost(vh9, position);
                 break;
             default:
                 vh1 = (ViewHolderVenta) viewHolder;

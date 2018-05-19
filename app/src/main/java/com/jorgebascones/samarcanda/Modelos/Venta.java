@@ -18,6 +18,7 @@ public class Venta {
     public boolean fromReserva;
     public String genero;
     public boolean anonimo;
+    public boolean miCompra;
 
 
     public Venta() {
@@ -124,5 +125,13 @@ public class Venta {
 
     public void setAnonimo(boolean anonimo) {
         this.anonimo = anonimo;
+    }
+
+    public boolean isMiCompra() {
+        return miCompra;
+    }
+
+    public void setMiCompra(boolean miCompra) {
+        this.miCompra = miCompra;
     }
 }

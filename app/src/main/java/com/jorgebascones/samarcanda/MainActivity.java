@@ -119,6 +119,7 @@ public class MainActivity extends AppCompatActivity
     private final int RESERVAS = "reservas".hashCode();
     private final int MI_PERFIL = "mi perfil".hashCode();
     private final int MIS_RESERVAS = "mis reservas".hashCode();
+    private final int MIS_COMPRAS = "mis compras".hashCode();
 
     private Menu optionsMenu;
 
@@ -147,7 +148,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onResume() {
         super.onResume();  // Always call the superclass method first
-        isOnline();
+        //isOnline();
     }
 
     public void lanzarPrimeraPantalla(){
@@ -396,6 +397,21 @@ public class MainActivity extends AppCompatActivity
             fragmenActual = "mis reservas";
 
 
+        }else if (id == MIS_COMPRAS) {
+            MisComprasFragment misComprasFragment = new MisComprasFragment();
+
+            FragmentManager manager = getSupportFragmentManager();
+
+            manager.beginTransaction().replace(R.id.main_fragmento,
+                    misComprasFragment,
+                    misComprasFragment.getTag()
+            ).commit();
+
+            loading.setVisibility(View.INVISIBLE);
+
+            fragmenActual = "mis compras";
+
+
         }
 
         Log.d("Menu",item.getItemId()+"");
@@ -413,9 +429,6 @@ public class MainActivity extends AppCompatActivity
         }else{
             setDrawerCliente(menu);
         }
-
-        menu.add(Menu.NONE,PAGO,Menu.NONE,"Pago")
-                .setIcon(R.drawable.ic_menu_camera);
 
         for(int i=0;i<menu.size();i++){
             menu.getItem(i).setCheckable(true);
@@ -624,6 +637,7 @@ public class MainActivity extends AppCompatActivity
                     myRef.child("/mensajes/").push().setValue(newComentario);
                     //myRef.child("/mensajes/"+user.getUid()).setValue(editTextInbox.getText().toString());
                     Log.d("Funciona","Se publica en /mensajes/"+user.getUid()+" el texto: "+ editTextInbox.getText());
+                    editTextInbox.setText("");
 
                 }
             });
@@ -1038,6 +1052,8 @@ public class MainActivity extends AppCompatActivity
                 .setIcon(R.mipmap.ic_tarjeta);
         menu.add(Menu.NONE,MIS_RESERVAS,Menu.NONE,"Mis reservas")
                 .setIcon(R.drawable.ic_venta_confirmada);
+        menu.add(Menu.NONE,MIS_COMPRAS,Menu.NONE,"Mis compras")
+                .setIcon(R.drawable.ic_menu_gallery);
     }
 
     public void isVendedor(String userId){
