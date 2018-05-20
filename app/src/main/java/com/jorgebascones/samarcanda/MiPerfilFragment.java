@@ -177,7 +177,7 @@ public class MiPerfilFragment extends Fragment {
 
         Context c = getActivity().getApplicationContext();
 
-        Picasso.with(c).load(miUrl).into(imagen);
+        Picasso.with(c).load(miUrl).placeholder(R.drawable.inicio).into(imagen);
 
     }
 

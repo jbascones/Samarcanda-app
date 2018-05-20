@@ -205,7 +205,7 @@ public class ComplexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         vh4.getButton().setVisibility(View.INVISIBLE);
         Context context = vh4.getLabel1().getContext();
 
-        Picasso.with(context).load(a.getFotoUrl()).into(vh4.getImageView());
+        Picasso.with(context).load(a.getFotoUrl()).placeholder(R.drawable.inicio).into(vh4.getImageView());
 
     }
 
@@ -215,7 +215,7 @@ public class ComplexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         vh5.getIcono().setImageDrawable(ContextCompat.getDrawable(vh5.getIcono().getContext(), R.drawable.inicio));
         Context context = vh5.getLabel1().getContext();
 
-        Picasso.with(context).load(c.getUrlFoto()).into(vh5.getIcono());
+        Picasso.with(context).load(c.getUrlFoto()).placeholder(R.drawable.inicio).into(vh5.getIcono());
 
     }
 
@@ -226,7 +226,7 @@ public class ComplexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         vh6.getIcono().setImageDrawable(ContextCompat.getDrawable(vh6.getIcono().getContext(), R.drawable.inicio));
         Context context = vh6.getLabel1().getContext();
 
-        Picasso.with(context).load(a.getFotoUrl()).into(vh6.getIcono());
+        Picasso.with(context).load(a.getFotoUrl()).placeholder(R.drawable.inicio).into(vh6.getIcono());
 
     }
     private void configureViewHolderCelda(ViewHolderArticulo vh7, int position) {
@@ -239,7 +239,7 @@ public class ComplexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         if(c.getTipo().equals("Elegir foto galeria")){
             vh7.getIcono().setImageResource(R.drawable.ic_menu_camera);
         }else{
-            Picasso.with(context).load(c.getFotoUrl()).resize(600,600).into(vh7.getIcono());
+            Picasso.with(context).load(c.getFotoUrl()).resize(600,600).placeholder(R.drawable.inicio).into(vh7.getIcono());
         }
     }
 
@@ -274,7 +274,7 @@ public class ComplexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         vh9.getIcono().setImageDrawable(ContextCompat.getDrawable(vh9.getIcono().getContext(), R.drawable.inicio));
         Context context = vh9.getTitulo().getContext();
 
-        Picasso.with(context).load(p.getUrlImagen()).into(vh9.getIcono());
+        Picasso.with(context).load(p.getUrlImagen()).placeholder(R.drawable.inicio).into(vh9.getIcono());
 
     }
 
