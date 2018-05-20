@@ -40,20 +40,20 @@ public class Tiempo {
     }
 
     public String getTitulo(){
-        if(temperatura <20){
+        if(temperatura <15){
             return "¿Estás preparado para el frío?";
-        }else if(temperatura > 20){
-            return "Hace un día genial";
+        }else if(temperatura > 15){
+            return "Hace un buen día";
         }else{
             return "Nos alegramos de verte";
         }
     }
 
     public String getSubtitulo(){
-        if(temperatura <20){
-            return "Échale un vistazo a nuestros abrigos";
-        }else if(temperatura > 20){
-            return "Seguro que te sientan genial nuestras camisetas";
+        if(temperatura <15){
+            return "Échale un vistazo a nuestros abrigos. Puedes encontrarlos en el Catálogo";
+        }else if(temperatura > 15){
+            return "Seguro que te sientan genial nuestras camisetas. Puedes encontrarlas en el Catálogo";
         }else{
             return "Seguro que tenemos algo que te guste";
         }

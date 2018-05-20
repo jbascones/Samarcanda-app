@@ -1,7 +1,6 @@
 package com.jorgebascones.samarcanda;
 
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -10,7 +9,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.text.InputType;
@@ -25,7 +23,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
+import android.widget.RadioGroup;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -35,11 +33,11 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.jorgebascones.samarcanda.Modelos.Articulo;
 import com.jorgebascones.samarcanda.Modelos.Post;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.UUID;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -47,11 +45,13 @@ import static android.app.Activity.RESULT_OK;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SubirPost extends Fragment {
+public class SubirArticulo extends Fragment {
 
-    private Button btnChoose, btnUpload, btnEnviar;
+    private Button btnChoose, btnUpload, btnEnviar, btnSiguiente;
     private ImageView imageView;
-    public Post post;
+    public Articulo articulo;
+    public RadioGroup radioGroup;
+    public String categoria;
 
     private Uri filePath;
 
@@ -68,7 +68,7 @@ public class SubirPost extends Fragment {
     StorageReference storageReference;
 
 
-    public SubirPost() {
+    public SubirArticulo() {
         // Required empty public constructor
     }
 
@@ -78,26 +78,9 @@ public class SubirPost extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        final View view = inflater.inflate(R.layout.fragment_subir_post, container, false);
-        ((MainActivity) getActivity()).getSupportActionBar().setTitle("Subir Post");
+        final View view = inflater.inflate(R.layout.fragment_elegir_categoria, container, false);
+        ((MainActivity) getActivity()).getSupportActionBar().setTitle("Subir Artículo");
         //Initialize Views
-        btnChoose = (Button) view.findViewById(R.id.btnChoose);
-        btnUpload = (Button) view.findViewById(R.id.btnUpload);
-        imageView = (ImageView) view.findViewById(R.id.imgView);
-
-        btnChoose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                chooseImage();
-            }
-        });
-
-        btnUpload.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                uploadImage();
-            }
-        });
 
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
@@ -106,11 +89,11 @@ public class SubirPost extends Fragment {
 
         setHasOptionsMenu(true);
 
-        btnUpload.setVisibility(View.INVISIBLE);
-
         v=view;
 
-        post = new Post();
+        articulo = new Articulo();
+
+        setElementosElegircategoria();
 
         return view;
     }
@@ -199,7 +182,7 @@ public class SubirPost extends Fragment {
 
             //StorageReference ref = storageReference.child("images/"+ UUID.randomUUID().toString());
             Long ruta =  System.currentTimeMillis();
-            StorageReference ref = storageReference.child("images/"+ ruta);
+            StorageReference ref = storageReference.child("articulos/"+categoria +"/" +ruta);
             ref.putBytes(data)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
@@ -209,9 +192,9 @@ public class SubirPost extends Fragment {
                             Log.d("SubirPost","Uploaded");
                             @SuppressWarnings("VisibleForTests") Uri downloadUrl = taskSnapshot.getDownloadUrl();
                             Log.d("SubirPost",downloadUrl.toString());
-                            post.setUrlImagen(downloadUrl.toString());
+                            articulo.setFotoUrl(downloadUrl.toString());
                             imageView.setImageResource(R.drawable.ic_menu_send);
-                            setViewLayout(R.layout.fragment_subir_post_texto);
+                            setViewLayout(R.layout.fragment_subir_articulo_texto);
                             setBtnEnviar();
                             EditText cuerpoEtxt = (EditText) v.findViewById(R.id.editText2);
                             cuerpoEtxt.setImeOptions(EditorInfo.IME_ACTION_DONE);
@@ -289,21 +272,76 @@ public class SubirPost extends Fragment {
         EditText tituloEtxt = (EditText)v.findViewById(R.id.editText);
         String titulo = tituloEtxt.getText().toString();
         EditText cuerpoEtxt = (EditText) v.findViewById(R.id.editText2);
-        String cuerpo = cuerpoEtxt.getText().toString();
-        post.setTitulo(titulo);
-        post.setCuerpo(cuerpo);
-        subirAFirebase(post);
+        String precio = cuerpoEtxt.getText().toString();
+        articulo.setNombre(titulo);
+        articulo.setPrecio(Integer.parseInt(precio));
+        EditText unidadesEtxt = (EditText)v.findViewById(R.id.editText3);
+        String unidades = unidadesEtxt.getText().toString();
+        articulo.setUnidades(Integer.parseInt(unidades));
+        subirAFirebase(articulo);
     }
     public void subirAFirebase(Object o){
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
 
-        DatabaseReference myRef = database.getReference("/posts/");
+        Log.d("Subir articulo","Subiendo "+articulo+" a "+categoria);
+
+        DatabaseReference myRef = database.getReference("/articulos/"+categoria);
 
         myRef.push().setValue(o);
 
         setViewLayout(R.layout.fragment_post_subido);
 
+    }
+
+    public void setElementosImagen(){
+        btnChoose = (Button) v.findViewById(R.id.btnChoose);
+        btnUpload = (Button) v.findViewById(R.id.btnUpload);
+        imageView = (ImageView) v.findViewById(R.id.imgView);
+
+        btnUpload.setVisibility(View.INVISIBLE);
+
+        btnChoose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                chooseImage();
+            }
+        });
+
+        btnUpload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                uploadImage();
+            }
+        });
+    }
+
+    public void setElementosElegircategoria(){
+        btnSiguiente = (Button) v.findViewById(R.id.btnSiguiente);
+        btnSiguiente.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setViewLayout(R.layout.fragment_subir_post);
+                setCategoria();
+                setElementosImagen();
+            }
+        });
+        radioGroup = (RadioGroup) v.findViewById(R.id.rdgGrupo);
+    }
+
+    public void setCategoria(){
+        int cElegida = radioGroup.getCheckedRadioButtonId();
+        switch (cElegida){
+            case R.id.rdbOne:
+                categoria = "camisetas";
+                break;
+            case R.id.rdbTwo:
+                categoria = "pantalones";
+                break;
+            case R.id.rdbThree:
+                categoria = "vestidos";
+                break;
+        }
     }
 
 

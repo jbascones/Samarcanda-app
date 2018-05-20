@@ -18,10 +18,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.jorgebascones.samarcanda.Modelos.Fecha;
+import com.jorgebascones.samarcanda.Modelos.Post;
 import com.jorgebascones.samarcanda.Modelos.Punto;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import lecho.lib.hellocharts.gesture.ZoomType;
@@ -33,6 +35,8 @@ import lecho.lib.hellocharts.model.PointValue;
 import lecho.lib.hellocharts.model.ValueShape;
 import lecho.lib.hellocharts.util.ChartUtils;
 import lecho.lib.hellocharts.view.LineChartView;
+import libs.mjn.prettydialog.PrettyDialog;
+import libs.mjn.prettydialog.PrettyDialogCallback;
 
 
 /**
@@ -69,6 +73,14 @@ public class GraficasFragment extends Fragment {
     private String rutaMes;
     //private LineChartData lineData;
 
+    private int sumaEdades;
+    private int cantidadCompradoresEdad;
+    private int [] posrcentajeGenero;
+    private double sumaImportes;
+    private double cantidadCompradoresImporte;
+    private ArrayList<Integer> horas;
+    private ArrayList<Integer> vecesHoras;
+
 
 
     @Override
@@ -91,6 +103,8 @@ public class GraficasFragment extends Fragment {
         //generateData();
 
         descargarListaVentas(f.sumarMesRuta(mesOffset));
+
+        descargarEstadisticas();
 
         return view;
     }
@@ -275,14 +289,238 @@ public class GraficasFragment extends Fragment {
 
             }
         });
+
+        Button verEstadisticas = (Button) v.findViewById(R.id.id_estadisticas);
+
+
+        verEstadisticas.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                lanzarCuadroEstadisticas();
+
+            }
+        });
+
     }
 
     public void condicionInicialRutaMes(){
         rutaMes = f.sumarMesRuta(0);
     }
 
+    public void lanzarCuadroEstadisticas(){
+        final PrettyDialog dialog = new PrettyDialog(getContext());
+        dialog
+                .setTitle("Estadísticas")
+                .setMessage(getMensaje())
+                .addButton(
+                        "Terminar",					// button text
+                        R.color.pdlg_color_white,		// button text color
+                        R.color.pdlg_color_green,		// button background color
+                        new PrettyDialogCallback() {		// button OnClick listener
+                            @Override
+                            public void onClick() {
+
+                                dialog.dismiss();
+                            }
+                        }
+                )
 
 
+                .show();
+    }
+
+    public String getMensaje(){
+
+        String m1 = "La media de edad de los compradores es "+(sumaEdades/cantidadCompradoresEdad)+ " años\n\n";
+        String m2 = "El "+(posrcentajeGenero[0]/posrcentajeGenero[2])*100+"% de compradores son hombres y el "+(posrcentajeGenero[1]/posrcentajeGenero[2])+"% mujeres\n\n";
+        Double mediaImportes =  (sumaImportes/cantidadCompradoresImporte);
+        mediaImportes = (double)Math.round(mediaImportes * 100d) / 100d;
+        String m3 = "El importe medio por compra es de "+(mediaImportes)+"€\n\n";
+        String m4 = "Hora de más ventas "+getHoraEntendible(getMaxHora())+"\n\n";
+        String m5 = "Hora de menos ventas "+getHoraEntendible(getMinHora())+"\n\n";
+
+        return m1+m2+m3+m4+m5;
+    }
+
+    public void descargarEstadisticas(){
+        descargarListaEdades();
+        posrcentajeGenero = new int[3];
+        descargarListaGenero();
+        descargarListaImportes();
+        horas = new ArrayList<>();
+        vecesHoras = new ArrayList<>();
+        descargarListaHoras();
+    }
+
+    public void descargarListaEdades(){
+
+        // Read from the database
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+        DatabaseReference myRef = database.getReference("/estadisticas/edad/datos");
+
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                for (DataSnapshot childDataSnapshot : dataSnapshot.getChildren()) {
+                    Log.v("Funciona",""+ childDataSnapshot.getKey()); //displays the key for the node
+                    Log.v("Funciona",""+ childDataSnapshot.getValue());
+                    calcularEdad(childDataSnapshot.getKey(), childDataSnapshot.getValue(Integer.class));
+
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                System.out.println("Failed to read value." + error.toException());
+            }
+        });
+    }
+
+    public void calcularEdad(String edadS, int veces){
+        int edad = Integer.parseInt(edadS);
+        sumaEdades = sumaEdades + edad*veces;
+        cantidadCompradoresEdad = cantidadCompradoresEdad + veces;
+
+    }
+
+    public void descargarListaGenero(){
+
+        // Read from the database
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+        DatabaseReference myRef = database.getReference("/estadisticas/ventas/genero");
+
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                for (DataSnapshot childDataSnapshot : dataSnapshot.getChildren()) {
+                    Log.v("Funciona",""+ childDataSnapshot.getKey()); //displays the key for the node
+                    Log.v("Funciona",""+ childDataSnapshot.getValue());
+                    calcularGenero(childDataSnapshot.getKey(), childDataSnapshot.getValue(Integer.class));
+
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                System.out.println("Failed to read value." + error.toException());
+            }
+        });
+    }
+
+    public void calcularGenero(String genero, int veces){
+        switch (genero){
+            case "masculino":
+                posrcentajeGenero[0] = posrcentajeGenero[0] + veces;
+                posrcentajeGenero[2] = posrcentajeGenero[2] + veces;
+                break;
+            default:
+                posrcentajeGenero[1] = posrcentajeGenero[1] + veces;
+                posrcentajeGenero[2] = posrcentajeGenero[2] + veces;
+        }
+    }
+    public void descargarListaImportes(){
+
+        // Read from the database
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+        DatabaseReference myRef = database.getReference("/estadisticas/ventas/importe");
+
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                for (DataSnapshot childDataSnapshot : dataSnapshot.getChildren()) {
+                    Log.v("Funciona",""+ childDataSnapshot.getKey()); //displays the key for the node
+                    Log.v("Funciona",""+ childDataSnapshot.getValue());
+                    calcularImporte(childDataSnapshot.getKey(), childDataSnapshot.getValue(Double.class));
+
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                System.out.println("Failed to read value." + error.toException());
+            }
+        });
+    }
+
+    public void calcularImporte(String importeS, Double veces){
+        int importe = Integer.parseInt(importeS);
+        sumaImportes = sumaImportes+importe*veces;
+        cantidadCompradoresImporte = cantidadCompradoresImporte + veces;
+
+    }
+
+    public void descargarListaHoras(){
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+        DatabaseReference myRef = database.getReference("/estadisticas/ventas/hora");
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                for (DataSnapshot childDataSnapshot : snapshot.getChildren()) {
+                    Log.v("Funciona",""+ childDataSnapshot.getKey()); //displays the key for the node
+                    Log.v("Funciona",""+ childDataSnapshot.getValue());
+                    horas.add(Integer.parseInt(childDataSnapshot.getKey()));
+                    vecesHoras.add(childDataSnapshot.getValue(Integer.class));
+
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+
+
+        })
+
+    ;}
+
+    public int getMaxHora(){
+        return horas.get(vecesHoras.indexOf(Collections.max(vecesHoras)));
+    }
+    public int getMinHora(){
+        return horas.get(vecesHoras.indexOf(Collections.min(vecesHoras)));
+    }
+
+    public String getHoraEntendible(int hora){
+
+        Double horaD = (double) hora/2;
+        String horaEntendible = "";
+
+        if(horaD%1==0){
+            horaEntendible = hora/2+":00";
+        }else{
+            horaEntendible = (hora/2) + ":30";
+        }
+
+        return horaEntendible;
+    }
 
 
 }

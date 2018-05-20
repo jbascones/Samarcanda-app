@@ -44,13 +44,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/id_boton_simular"
-            android:layout_above="@+id/id_cambiar" />
+            android:layout_above="@+id/id_estadisticas" />
         <Button
-            android:id="@+id/id_cambiar"
+            android:id="@+id/id_estadisticas"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
-            android:text="Cambiar gráfica"
+            android:text="Ver estadísticas"
             android:theme="@style/ThemeOverlay.MyDarkButton"
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"

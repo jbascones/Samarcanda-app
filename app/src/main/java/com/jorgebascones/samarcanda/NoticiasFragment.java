@@ -73,7 +73,7 @@ public class NoticiasFragment extends Fragment {
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_noticias, container, false);
 
-        ((MainActivity) getActivity()).getSupportActionBar().setTitle("Noticias");
+        ((MainActivity) getActivity()).getSupportActionBar().setTitle("Ofertas y Noticias");
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
@@ -172,6 +172,7 @@ public class NoticiasFragment extends Fragment {
             @Override
             public void onReceiveWeatherInfo(CurrentWeatherInfo currentWeatherInfo) {
                 currentWeatherInfoC = WeatherUnitConverter.convertToMetric(currentWeatherInfo);
+
                 Double temperatura = Double.parseDouble(currentWeatherInfo.getCurrentTemperature()) - 273 ;
                 Log.d(TAG,"Temperatura "+ temperatura);
                 long intT = round(temperatura);
@@ -179,7 +180,7 @@ public class NoticiasFragment extends Fragment {
                 String descripncion = currentWeatherInfoC.getWeatherDescriptionLong();
                 myRef.child("/weather/"+ descripncion).setValue(true);
                 Tiempo tiempo = new Tiempo(intT, descripncion, currentWeatherInfo.getWeatherIconLink());
-                noticias.add(tiempo);
+                noticias.add(0,tiempo);
                 bindDataToAdapter();
 
             }
@@ -192,7 +193,7 @@ public class NoticiasFragment extends Fragment {
         retriever.updateDailyForecastInfo(MADRID, new DailyForecastCallback() {
             @Override
             public void onReceiveDailyForecastInfoList(List<DailyForecastInfo> dailyForecastInfoList) {
-                // Your code here
+
             }
 
             @Override
@@ -200,6 +201,7 @@ public class NoticiasFragment extends Fragment {
 
             }
         });
+
 
     }
 

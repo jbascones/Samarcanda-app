@@ -53,6 +53,14 @@
         <item>#fffdeb</item>
     </string-array>
 
+    <string-array name="post_confeti">
+        <item>#809ad7f4</item>
+        <item>#80cfecfa</item>
+        <item>#80f2fafe</item>
+        <item>#e1f3fc</item>
+        <item>#80fffdeb</item>
+    </string-array>
+
     <string-array name="path">
         <item>com.github.glomadrian.grav.generator.animation.PathAnimator</item>
         <item>com.github.glomadrian.grav.generator.animation.BallSizeAnimator</item>

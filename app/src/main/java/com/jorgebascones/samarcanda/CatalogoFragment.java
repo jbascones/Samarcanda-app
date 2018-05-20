@@ -7,6 +7,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -150,6 +151,10 @@ public class CatalogoFragment extends Fragment {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            return true;
+        }
+        if (id == 1) {
+            irSubirArticulo();
             return true;
         }
 
@@ -564,6 +569,17 @@ public class CatalogoFragment extends Fragment {
             }
 
         });
+    }
+
+    public void irSubirArticulo(){
+        SubirArticulo subirArticuloFragment = new SubirArticulo();
+
+        FragmentManager manager = getFragmentManager();
+
+        manager.beginTransaction().replace(R.id.main_fragmento,
+                subirArticuloFragment,
+                subirArticuloFragment.getTag()
+        ).commit();
     }
 
 
